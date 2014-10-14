@@ -1,0 +1,46 @@
+{
+  "name": "weekly-report",
+  "version": "0.0.0",
+  "description": "",
+  "private": true,
+  "main": "server/server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/walmartlabs/weekly-report.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/walmartlabs/weekly-report/issues"
+  },
+  "homepage": "https://github.com/walmartlabs/weekly-report",
+  "dependencies": {
+    "boom": "2.5.1",
+    "hapi": "7.0.0",
+    "hapi-mongodb": "2.2.0",
+    "hoek": "2.5.1",
+    "jquery": "^2.1.1",
+    "lodash": "2.4.1",
+    "react": "0.11.2"
+  },
+  "devDependencies": {
+    "chai": "1.9.2",
+    "gulp": "^3.8.8",
+    "gulp-connect": "^2.0.6",
+    "gulp-jshint": "^1.8.5",
+    "gulp-karma": "0.0.4",
+    "gulp-nodemon": "^1.0.4",
+    "gulp-rimraf": "^0.1.1",
+    "gulp-util": "^3.0.1",
+    "jsx-loader": "^0.11.2",
+    "karma": "^0.12.24",
+    "mocha": "1.21.5",
+    "sinon": "1.10.3",
+    "webpack": "1.4.7"
+  }
+}
