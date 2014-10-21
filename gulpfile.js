@@ -210,7 +210,6 @@ gulp.task("start", function () {
   runSequence("build", "cli", "open-browser", "connect", "watch");
 });
 
-gulp.task("build:docs", ["docs"]);
 gulp.task("check:dev",  ["jshint", "jscs", "mocha"]);
 gulp.task("check",      ["jshint", "jshint:mock",
                          "jscs", "jscs:mock", "mocha"]);
