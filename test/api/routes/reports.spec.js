@@ -1,6 +1,5 @@
 
-var reports = require("../../../api/routes/reports");
-var server = require('../../../api/server');
+var server = require("../../../api/server");
 
 describe("api/routes/reports", function () {
 
