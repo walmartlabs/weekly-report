@@ -3,8 +3,10 @@
  */
 
 // Expose test globals
-var sinonChai = require("sinon-chai");
 var chai = require("chai");
+var request = require("supertest");
+var sinonChai = require("sinon-chai");
+
 chai.use(sinonChai);
 
 global.sinon = require("sinon");
