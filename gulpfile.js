@@ -87,6 +87,7 @@ gulp.task("watch", function () {
 var jsSources = [
   "*.js",
   "api/**/*.js",
+  "test/*.js"
 ];
 
 var jsTestSources = [
@@ -125,7 +126,8 @@ gulp.task("jshint:backend-test", function () {
         "it",
         "sinon",
         "expect",
-        "request"
+        "request",
+        "test"
       ].concat(jshintCfg.predef)
     })))
     .pipe(jshint.reporter("default"))
