@@ -1,0 +1,4 @@
+{  
+  "requireLineFeedAtFileEnd": true,
+  "safeContextKeyword": ["self"]
+}
