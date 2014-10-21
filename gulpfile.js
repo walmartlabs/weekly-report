@@ -126,7 +126,6 @@ gulp.task("jshint:backend-test", function () {
         "it",
         "sinon",
         "expect",
-        "request",
         "test"
       ].concat(jshintCfg.predef)
     })))
