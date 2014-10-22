@@ -121,6 +121,7 @@ gulp.task("jshint:backend-test", function () {
       node: true,
       predef: [
         "describe",
+        "before",
         "beforeEach",
         "afterEach",
         "it",
