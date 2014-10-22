@@ -13,16 +13,17 @@ module.exports = function (sqlize) {
     periodStart:     { type: Sqlize.DATE, allowNull: false },
     periodEnd:       { type: Sqlize.DATE, allowNull: false },
     creatorEmail:    { type: Sqlize.STRING(255),
-                       allowNull: false,
-                       isEmail: true
+                       allowNull: false
                      },
     projectName:     { type: Sqlize.STRING(255), allowNull: false }
   });
 
   // TODO: Compose key survey_id, email
-  // TODO: Unique token
   var Response = sqlize.define("Response", {
-    token:                { type: Sqlize.STRING(255), allowNull: false },
+    token:                { type: Sqlize.STRING(255),
+                            allowNull: false,
+                            unique: true
+                          },
     email:                { type: Sqlize.STRING(255),
                             allowNull: false,
                             isEmail: true

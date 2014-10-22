@@ -7,6 +7,7 @@
     "hapi": "7.0.0",
     "lodash": "2.4.1",
     "moment": "2.8.3",
+    "sequelize": "2.0.0-rc2",
     "sqlite3": "^3.0.2"
   },
   "devDependencies": {
@@ -22,7 +23,7 @@
     "gulp-livereload": "2.1.1",
     "gulp-mocha": "1.0.0",
     "gulp-sass": "0.7.3",
-    "nodemon": "^1.2.1",
+    "nodemon": "1.2.1",
     "open": "0.0.5",
     "run-sequence": "0.3.6",
     "serve-static": "1.5.4",
