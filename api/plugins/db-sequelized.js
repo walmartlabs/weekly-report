@@ -18,11 +18,12 @@ exports.register = function (plugin, options, next) {
 
   db = {
     Survey: Survey,
-    Reponse: Response
+    Response: Response
   };
 
   // Relationships
   Survey.hasMany(Response);
+  Response.belongsTo(Survey);
 
   // Expose sqlize objects to the application
   plugin.expose("models", _.merge(db, { sqlize: sqlize, Sqlize: Sqlize }));
