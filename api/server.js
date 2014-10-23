@@ -13,11 +13,11 @@ require("./routes/surveys")(server);
 server.pack.register({
   plugin: require("./plugins/db-sequelized"),
   options: {
-    database: "",
-    user: "",
-    pass: "",
-    dialect: "sqlite",
-    storage: "./db/dev.sqlite3",
+    database: process.env.DATABASE || "",
+    user: process.env.DATABASE_USER || "",
+    pass: process.env.DATABASE_PASS || "",
+    dialect: process.env.DATABASE_DIALECT || "sqlite",
+    storage: process.env.DATABASE_STORAGE || null,
     logging: false
   }
 }, function (err) {
