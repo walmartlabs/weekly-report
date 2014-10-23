@@ -3,11 +3,8 @@ var Sqlize = require("sequelize");
 var db = {};
 
 exports.register = function (plugin, options, next) {
-  // Start sqlite if no database defined
-  if (options.dialect === "sqlite" && !options.storage) {
-
-  // Only this mode currently supported
-  } else {
+  // Only currently support dev mode
+  if (options.dialect !== "sqlite" || options.storage) {
     throw new Error("Only in memory sqlite currently supported");
   }
 
