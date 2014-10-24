@@ -120,6 +120,7 @@ gulp.task("jshint:backend-test", function () {
     .pipe(jshint(_.merge({}, jshintCfg, {
       node: true,
       predef: [
+        "after",
         "describe",
         "before",
         "beforeEach",
