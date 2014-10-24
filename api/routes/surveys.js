@@ -38,12 +38,14 @@ module.exports = function (server) {
               });
             }, function (err) {
               global.console.log("failed on answer", err);
+              server.log("warning", err);
               res({
                 err: err,
                 msg: "Failed to create empty responses"
               });
             });
         }, function (err) {
+          server.log("warning", err);
           global.console.log("failed on survey", err);
           res({
             err: err,

@@ -27,6 +27,13 @@ describe("api/routes/reports", function () {
 
   before(function (done) {
     require("../../../api/server")(function (server) {
+
+      after(function (done) {
+        server.stop(function () {
+          done();
+        });
+      });
+
       server.inject({
         method: "POST",
         url: "/surveys",

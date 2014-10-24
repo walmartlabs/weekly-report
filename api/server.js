@@ -3,6 +3,7 @@
  *
  * @exports {function}  With server passed to callback
  */
+var Good = require("good");
 var Hapi = require("hapi");
 
 var callback;
@@ -10,7 +11,7 @@ var server = Hapi.createServer("localhost", 8000);
 
 require("./routes/surveys")(server);
 
-server.pack.register({
+server.pack.register([{
   plugin: require("./plugins/db-sequelized"),
   options: {
     database: process.env.DATABASE || "",
@@ -20,7 +21,11 @@ server.pack.register({
     storage: process.env.DATABASE_STORAGE || null,
     logging: false
   }
-}, function (err) {
+}, {
+  // Add Good logger
+  // Todo[]: Build Winston into plugin
+  plugin: Good
+}], function (err) {
   if (err) { throw err; }
 
   var models = server.plugins.sqlModels.models;
@@ -32,7 +37,7 @@ server.pack.register({
 
       if (!module.parent) {
         server.start(function () {
-          global.console.log("Server running at: ", server.info.uri);
+          server.log("info", "Server running at: ", server.info.uri);
         });
       }
 
