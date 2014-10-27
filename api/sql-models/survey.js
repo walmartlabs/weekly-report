@@ -8,12 +8,22 @@
 module.exports = function (sqlize, DataTypes) {
 
   var Survey = sqlize.define("Survey", {
-    periodStart:     { type: DataTypes.DATE, allowNull: false },
-    periodEnd:       { type: DataTypes.DATE, allowNull: false },
-    creatorEmail:    { type: DataTypes.STRING(255),
-                       allowNull: false
-                     },
-    projectName:     { type: DataTypes.STRING(255), allowNull: false }
+    periodStart: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    periodEnd: {
+      type: DataTypes.DATE,
+      allowNull: false
+    },
+    creatorEmail: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    },
+    projectName: {
+      type: DataTypes.STRING(255),
+      allowNull: false
+    }
   });
 
   return Survey;

@@ -40,5 +40,8 @@
   "license": "private",
   "bugs": {
     "url": "https://github.com/walmartlabs/weekly-report/issues"
+  },
+  "scripts": {
+    "todo": "grep -Rn 'TODO' api app test *.js"
   }
 }

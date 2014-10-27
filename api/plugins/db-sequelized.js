@@ -1,6 +1,8 @@
 var _ = require("lodash");
 var Sqlize = require("sequelize");
-var db = {};
+
+var surveySchema = require("../sql-models/survey");
+var responseSchema = require("../sql-models/response");
 
 exports.register = function (plugin, options, next) {
   // Only currently support dev mode
@@ -13,20 +15,22 @@ exports.register = function (plugin, options, next) {
     options.database, options.user, options.pass,
     _.omit(options, ["database", "user", "pass"]));
 
-  var Survey = require("../sql-models/survey")(sqlize, Sqlize);
-  var Response = require("../sql-models/response")(sqlize, Sqlize);
-
-  db = {
-    Survey: Survey,
-    Response: Response
-  };
+  var Survey = surveySchema(sqlize, Sqlize);
+  var Response = responseSchema(sqlize, Sqlize);
 
   // Relationships
   Survey.hasMany(Response);
   Response.belongsTo(Survey);
 
+  var db = {
+    Survey: Survey,
+    Response: Response,
+    sqlize: sqlize,
+    Sqlize: Sqlize
+  };
+
   // Expose sqlize objects to the application
-  plugin.expose("models", _.merge(db, { sqlize: sqlize, Sqlize: Sqlize }));
+  plugin.expose("models", db);
 
   next();
 };

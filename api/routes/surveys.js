@@ -18,7 +18,7 @@ module.exports = function (server) {
     handler: function (req, res) {
       var survey = req.payload;
       var models = req.server.plugins.sqlModels.models;
-      // TODO: Verify data
+      // TODO[6]: Verify data
       // First insert to Survey table
       models.Survey.create(survey)
         // Second add record for each email address

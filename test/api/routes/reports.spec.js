@@ -1,5 +1,6 @@
 var _ = require("lodash");
 var moment = require("moment");
+var startServer = require("../../../api/server");
 
 var stdizer = function (object) {
   if (object.periodStart) {
@@ -24,15 +25,17 @@ describe("api/routes/reports", function () {
   var resBody;
   var survey;
   var responses;
+  var serverRef;
+
+  after(function (done) {
+    serverRef.stop(function () {
+      done();
+    });
+  });
 
   before(function (done) {
-    require("../../../api/server")(function (server) {
-
-      after(function (done) {
-        server.stop(function () {
-          done();
-        });
-      });
+    startServer(null, function (server) {
+      serverRef = server;
 
       server.inject({
         method: "POST",
