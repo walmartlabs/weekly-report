@@ -10,6 +10,7 @@ var Chance = require("chance");
 var chance = new Chance();
 
 module.exports = function (server) {
+  var surveyRecord;
 
   // Create new survey
   server.route({
@@ -22,7 +23,8 @@ module.exports = function (server) {
       // First insert to Survey table
       models.Survey.create(survey)
         // Second add record for each email address
-        .then(function (surveyRecord) {
+        .then(function (newRecord) {
+          surveyRecord = newRecord;
           var responses = _.map(survey.emails, function (email) {
             return {
               token: chance.hash({ length: 15 }),
@@ -30,27 +32,30 @@ module.exports = function (server) {
               SurveyId: surveyRecord.id
             };
           });
-          models.Response.bulkCreate(responses)
-            .then(function () {
-              res({
-                newSurvey: surveyRecord,
-                msg: "New survey and empty responses created"
-              });
-            }, function (err) {
-              global.console.log("failed on answer", err);
-              server.log("warning", err);
-              res({
-                err: err,
-                msg: "Failed to create empty responses"
-              });
-            });
+
+          return models.Response.bulkCreate(responses);
         }, function (err) {
-          server.log("warning", err);
-          global.console.log("failed on survey", err);
-          res({
+          var errObj = {
             err: err,
-            msg: "Failed to create new survey"
+            msg: "Failed to create new survey record"
+          };
+
+          server.log("warning", errObj);
+          res(errObj);
+        })
+        .then(function () {
+          res({
+            newSurvey: surveyRecord,
+            msg: "New survey and empty responses created"
           });
+        }, function (err) {
+          var errObj = {
+            err: err,
+            msg: "Failed to create new response records"
+          };
+
+          server.log("warning", errObj);
+          res(errObj);
         });
     }
   });

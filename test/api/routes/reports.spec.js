@@ -36,7 +36,9 @@ describe("api/routes/reports", function () {
     emails: ["hi@gmail.com", "lo@gmail.com"]
   };
 
-  it("should populate records and respond with servey record", function (done) {
+  it("should populate records and respond with survey record", function (done) {
+    var survey;
+
     server.inject({
       method: "POST",
       url: "/surveys",
@@ -48,12 +50,13 @@ describe("api/routes/reports", function () {
       models.Survey.find({
         where: { projectName: testSurvey.projectName }
       })
-      .then(function (survey) {
-        models.Response.findAll({
-          where: { SurveyId: survey.dataValues.id }
+        .then(function (foundSurvey) {
+          survey = foundSurvey;
+          return models.Response.findAll({
+            where: { SurveyId: survey.dataValues.id }
+          });
         })
         .then(function (response) {
-
           test.done(done, function () {
             expect(res.statusCode).to.equal(200);
             expect(stdizer(resBody.newSurvey))
@@ -66,7 +69,6 @@ describe("api/routes/reports", function () {
               .to.equal(testSurvey.emails[1]);
           });
         });
-      });
     });
   });
 });
