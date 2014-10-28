@@ -8,7 +8,7 @@ var _ = require("lodash");
 var Chance = require("chance");
 var chance = new Chance();
 
-var utils = require("../lib/utils.js");
+var utils = require("../lib/utils");
 
 module.exports = function (server) {
   var surveyRecord;
