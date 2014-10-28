@@ -105,7 +105,7 @@ var jsAppSources = [
 var jshintCfg = _jshintCfg(".jshintrc.json");
 
 gulp.task("jshint:backend", function () {
-  gulp
+  return gulp
     .src(jsSources)
     .pipe(jshint(_.merge({}, jshintCfg, {
       node: true,
@@ -115,12 +115,14 @@ gulp.task("jshint:backend", function () {
 });
 
 gulp.task("jshint:backend-test", function () {
-  gulp
+  return gulp
     .src(jsTestSources)
     .pipe(jshint(_.merge({}, jshintCfg, {
       node: true,
       predef: [
+        "after",
         "describe",
+        "before",
         "beforeEach",
         "afterEach",
         "it",
@@ -134,7 +136,7 @@ gulp.task("jshint:backend-test", function () {
 });
 
 gulp.task("jshint:frontend", function () {
-  gulp
+  return gulp
     .src(jsAppSources)
     .pipe(jshint(_.merge({}, jshintCfg, {
       browser: true,
@@ -145,7 +147,7 @@ gulp.task("jshint:frontend", function () {
 });
 
 gulp.task("jshint:mock", function () {
-  gulp
+  return gulp
     .src(jsMockSources)
     .pipe(jshint(_.merge({}, jshintCfg, {
       node: true,
@@ -161,7 +163,7 @@ gulp.task("jshint", [
 ]);
 
 gulp.task("jscs", function () {
-  gulp
+  return gulp
     .src([].concat(
       jsSources,
       jsAppSources,
@@ -171,7 +173,7 @@ gulp.task("jscs", function () {
 });
 
 gulp.task("jscs:mock", function () {
-  gulp
+  return gulp
     .src(jsMockSources)
     .pipe(jscs());
 });
@@ -183,7 +185,7 @@ gulp.task("mocha", function () {
   // Include setup.
   require("./test/setup");
 
-  gulp
+  return gulp
     .src(["test/**/*.spec.js"])
     .pipe(mocha({
       ui: "bdd",

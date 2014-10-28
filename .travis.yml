@@ -2,6 +2,14 @@ language: node_js
 node_js:
   - 0.10
 
+before_script:
+  - mysql -e "drop database IF EXISTS app_test "
+  - mysql -e "create database app_test"
+
+env:
+  - DATABASE=app_test DATABASE_USER=root DATABASE_DIALECT=mysql
+  - DATABASE_DIALECT=sqlite
+
 script:
   - ./node_modules/.bin/gulp check
   - ./node_modules/.bin/gulp build
