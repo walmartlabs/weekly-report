@@ -1,5 +1,6 @@
 /*
- * Weekly Reports Server
+ * Weekly Reports Server. This module creates a Hapi server
+ * instance and creates tables in database if not existing
  *
  * @exports {function}  With server passed to callback
  */
@@ -9,7 +10,7 @@ var Good = require("good");
 var Hapi = require("hapi");
 var surveyRoutes = require("./routes/surveys");
 
-var startServer = function (options, callback) {
+var getServer = function (options, callback) {
   // TODO[5]: Recluster
   var server = Hapi.createServer("localhost", process.env.PORT || 8000);
 
@@ -40,22 +41,16 @@ var startServer = function (options, callback) {
     models
       .sqlize
       .sync()
-      .complete(function (err) {
-        if (err) { throw err[0]; }
-
-        if (!module.parent) {
-          server.start(function () {
-            server.log("info", "Server running at: ", server.info.uri);
-          });
-        } else if (_.isFunction(callback)) {
-          callback(server);
+      .then(function () {
+        if (!_.isFunction(callback)) {
+          return callback(new Error("Callback is not a function"));
         }
+
+        callback(null, server);
+      }, function (err) {
+        callback(err);
       });
   });
 };
 
-if (!module.parent) {
-  startServer();
-}
-
-module.exports = startServer;
+module.exports = getServer;

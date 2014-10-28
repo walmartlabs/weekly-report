@@ -1,6 +1,6 @@
 var _ = require("lodash");
 var moment = require("moment");
-var startServer = require("../../../api/server");
+var getServer = require("../../../api/server");
 
 var stdizer = function (object) {
   if (object.periodStart) {
@@ -16,16 +16,16 @@ describe("api/routes/reports", function () {
   var server;
 
   before(function (done) {
-    startServer(null, function (serverRef) {
+    getServer(null, function (err, serverRef) {
+      if (err) { throw new Error("surver failed to load"); }
+
       server = serverRef;
-      done();
+      server.start(done);
     });
   });
 
   after(function (done) {
-    server.stop(function () {
-      done();
-    });
+    server.stop(done);
   });
 
   var testSurvey = {
