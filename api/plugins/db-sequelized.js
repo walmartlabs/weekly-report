@@ -7,11 +7,6 @@ var responseSchema = require("../sql-models/response");
 var register = function (plugin, options, next) {
   options.server.log("info", "Using dialect: " + options.dialect);
 
-  // Only currently support dev mode
-  if (options.dialect !== "sqlite" || options.storage) {
-    throw new Error("Only in memory sqlite currently supported");
-  }
-
   // Create db connection
   var sqlize = new Sqlize(
     options.database, options.user, options.pass,
