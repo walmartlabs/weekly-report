@@ -12,14 +12,16 @@
  * @param {object}  err   The err object resulting from failed write to DB
  * @param {string}  msg   The message to log and send with response
  */
-var handleWriteErr = function (req, res, err, msg) {
-  var errObj = {
-    err: err,
-    msg: msg
-  };
+var handleWriteErr = function (req, res, msg) {
+  return function (err) {
+    var errObj = {
+      err: err,
+      msg: msg
+    };
 
-  req.server.log("warning", errObj);
-  res(errObj);
+    req.server.log("warning", errObj);
+    res(errObj);
+  };
 };
 
 module.exports = {
