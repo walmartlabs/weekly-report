@@ -17,7 +17,7 @@ describe("api/routes/reports", function () {
 
   before(function (done) {
     getServer(null, function (err, serverRef) {
-      if (err) { throw new Error("surver failed to load"); }
+      if (err) { return done(err); }
 
       server = serverRef;
       server.start(done);

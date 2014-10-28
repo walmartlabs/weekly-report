@@ -37,6 +37,7 @@ var getServer = function (options, callback) {
   }], function (err) {
     if (err) { throw err; }
 
+    // Build tables if not already present in DB
     var models = server.plugins.sqlModels.models;
     models
       .sqlize

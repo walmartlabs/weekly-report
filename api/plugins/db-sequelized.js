@@ -4,7 +4,7 @@ var Sqlize = require("sequelize");
 var surveySchema = require("../sql-models/survey");
 var responseSchema = require("../sql-models/response");
 
-exports.register = function (plugin, options, next) {
+var register = function (plugin, options, next) {
   // Only currently support dev mode
   if (options.dialect !== "sqlite" || options.storage) {
     throw new Error("Only in memory sqlite currently supported");
@@ -22,19 +22,21 @@ exports.register = function (plugin, options, next) {
   Survey.hasMany(Response);
   Response.belongsTo(Survey);
 
-  var db = {
+  // Expose sqlize objects to the application
+  plugin.expose("models", {
     Survey: Survey,
     Response: Response,
     sqlize: sqlize,
     Sqlize: Sqlize
-  };
-
-  // Expose sqlize objects to the application
-  plugin.expose("models", db);
+  });
 
   next();
 };
 
-exports.register.attributes = {
+register.attributes = {
   name: "sqlModels"
+};
+
+module.exports = {
+  register: register
 };
