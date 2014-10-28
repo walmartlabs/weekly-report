@@ -21,8 +21,13 @@ var getServer = function (options, callback) {
 
   // Add sequelize models
   server.pack.register([{
+    // Add Good logger
+    // TODO[4]: Build Winston into plugin
+    plugin: Good
+  }, {
     plugin: dbSequelized,
     options: {
+      server: server,
       database: process.env.DATABASE || options.database || "",
       user: process.env.DATABASE_USER || options.user || "",
       pass: process.env.DATABASE_PASS || options.pass || "",
@@ -30,10 +35,6 @@ var getServer = function (options, callback) {
       storage: process.env.DATABASE_STORAGE || options.storage || null,
       logging: false
     }
-  }, {
-    // Add Good logger
-    // TODO[4]: Build Winston into plugin
-    plugin: Good
   }], function (err) {
     if (err) { return callback(err); }
 

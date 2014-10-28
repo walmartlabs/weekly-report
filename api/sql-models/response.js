@@ -7,7 +7,6 @@
 // id, createdAt, updatedAt added automatically
 
 var SHORT_CHARS = 255;
-var LONG_CHARS = 65535;
 
 module.exports = function (sqlize, DataTypes) {
 
@@ -26,17 +25,17 @@ module.exports = function (sqlize, DataTypes) {
       type: DataTypes.DATE
     },
     howsItGoing: {
-      type: DataTypes.STRING(LONG_CHARS)
+      type: DataTypes.TEXT
     },
     // TODO[7]: Enforce JSON array for accomplishments
     accomplishments: {
-      type: DataTypes.STRING(LONG_CHARS)
+      type: DataTypes.TEXT
     },
     blockers: {
-      type: DataTypes.STRING(LONG_CHARS)
+      type: DataTypes.TEXT
     },
     privateFeedback: {
-      type: DataTypes.STRING(LONG_CHARS)
+      type: DataTypes.TEXT
     },
     reportedMorale: {
       type: DataTypes.STRING(SHORT_CHARS)

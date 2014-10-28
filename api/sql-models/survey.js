@@ -5,6 +5,9 @@
  * @exports {function}  To add models to instance
  */
 // id, createdAt, updatedAt added automatically
+
+var SHORT_CHARS = 255;
+
 module.exports = function (sqlize, DataTypes) {
 
   var Survey = sqlize.define("Survey", {
@@ -17,11 +20,11 @@ module.exports = function (sqlize, DataTypes) {
       allowNull: false
     },
     creatorEmail: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(SHORT_CHARS),
       allowNull: false
     },
     projectName: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.STRING(SHORT_CHARS),
       allowNull: false
     }
   });
