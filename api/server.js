@@ -35,7 +35,7 @@ var getServer = function (options, callback) {
     // TODO[4]: Build Winston into plugin
     plugin: Good
   }], function (err) {
-    if (err) { throw err; }
+    if (err) { return callback(err); }
 
     // Build tables if not already present in DB
     var models = server.plugins.sqlModels.models;
