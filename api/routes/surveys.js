@@ -42,9 +42,10 @@ module.exports = function (server) {
         )
 
         // Finally respond to client with new survey record
-        .then(function () {
+        .then(function (responseRecords) {
           res({
             newSurvey: surveyRecord,
+            newResponses: responseRecords,
             msg: "New survey and empty responses created"
           });
         }, utils.handleWriteErr(

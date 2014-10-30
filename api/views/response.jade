@@ -1,0 +1,62 @@
+html(lang="en")
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible" content="IE=edge,chrome=1")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1")
+    meta(name="apple-mobile-web-app-capable" content="yes")
+    title Weekly Report Survey
+
+    link(href="http://fonts.googleapis.com/css?family=Montserrat:400,700", rel="stylesheet", type="text/css")
+    link(href="http://fonts.googleapis.com/css?family=Karla:400,700,400italic", rel="stylesheet", type="text/css")
+    <!-- Stylesheets -->
+    link(rel="stylesheet", href="/css/main.css")
+  body
+    div.report-container
+      div.reportHeading
+        h1.headingA
+          | Hi, Ryan!
+        p
+          | Thanks for taking a few minutes to fill in your weekly report(s).
+      form.form(name="tokenA")
+        input(type="hidden", name="token",
+         value="tokenA")
+        section
+          legend
+            h2.headingB What were your key accomplishments this week?
+              br
+              span.headingB-subheading (Try to limit to 3&ndash;6 items)
+          ul.updating-list
+            li
+              input.input.updating-list-item(type="text", name="accomplishments")
+        section
+          legend
+            h2.headingB What were you blocked on at some point this week?
+              br
+              span.headingB-subheading (Try to limit to 3&ndash;6 items)
+          ul.updating-list
+            li
+              input.input.updating-list-item(type="text", name="blockers")
+        section
+          legend
+            h2.headingB
+              | Optional Private Feedback for Management
+          p.headingC How's it going?
+          div.morale-picker-container
+            div.morale-picker
+              div.morale-item
+                input.morale-picker-input(type="radio", {{}} name="moralePicker", id="morale-rad-1", value="1")
+                label.morale-picker-label.morale-1(for="morale-rad-1") Bad
+              div.morale-item
+                input.morale-picker-input(type="radio", name="moralePicker", id="morale-rad-2", value="2")
+                label.morale-picker-label.morale-2(for="morale-rad-2") Nuetral
+              div.morale-item
+                input.morale-picker-input(type="radio", name="moralePicker", id="morale-rad-3", value="2")
+                label.morale-picker-label.morale-3(for="morale-rad-3") Good
+          p.headingC Other private feedback?
+            div.question-display-answers
+              textarea.textarea(name="privateFeedback", form="tokenA")
+        div.form-footer
+          input.btn(type="submit", value="Send Report")
+
+    <!-- JavaScript -->
+    script(src="bundle.js")

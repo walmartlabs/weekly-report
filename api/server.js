@@ -9,6 +9,7 @@ var dbSequelized = require("./plugins/db-sequelized");
 var Good = require("good");
 var Hapi = require("hapi");
 var surveyRoutes = require("./routes/surveys");
+var responseRoutes = require("./routes/responses");
 
 var getServer = function (options, callback) {
   // TODO[5]: Recluster
@@ -16,6 +17,7 @@ var getServer = function (options, callback) {
 
   // Add routes to server
   surveyRoutes(server);
+  responseRoutes(server);
 
   options = options || {};
 

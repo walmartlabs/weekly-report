@@ -9,7 +9,6 @@ var cssmin = require("gulp-cssmin");
 var gulp = require("gulp");
 var gutil = require("gulp-util");
 var clean = require("gulp-clean");
-var jade = require("gulp-jade");
 var jscs = require("gulp-jscs");
 var jshint = require("gulp-jshint");
 var livereload = require("gulp-livereload");
@@ -38,13 +37,12 @@ var _jshintCfg = function (name) {
 var options = {
   "port": 8000,
   "host": "localhost",
-  "scssPath": "./app/scss/",
-  "jadePath": "./app/views/"
+  "scssPath": "./app/scss/"
 };
 
 gulp.task("open-browser", function () {
   return open(path.join("http://" + options.host + ":" +
-    options.port));
+    options.port, "dev", "responses"));
 });
 
 gulp.task("copy", function () {
@@ -64,13 +62,6 @@ gulp.task("css", function () {
     .pipe(autoprefixer())
     .pipe(cssmin())
     .pipe(gulp.dest("./build/css"))
-    .pipe(livereload());
-});
-
-gulp.task("jade", function () {
-  return gulp.src(options.jadePath + "*.jade")
-    .pipe(jade())
-    .pipe(gulp.dest("./build/"))
     .pipe(livereload());
 });
 
@@ -113,8 +104,10 @@ gulp.task("js", _webpack(_.merge({}, buildCfg, {
 })));
 
 gulp.task("watch", function () {
+  livereload.listen();
+
   gulp.watch(options.scssPath + "**/*.scss", ["css"]);
-  gulp.watch("app/**/*.jade", ["jade"]);
+  gulp.watch("api/views/**/*.jade").on("change", livereload.changed);
   gulp.watch("app/js/**/*.js", ["js"]);
 });
 
@@ -220,14 +213,18 @@ gulp.task("mocha", function () {
 // Nodemon
 // ----------------------------------------------------------------------------
 gulp.task("server:dev", function () {
-  nodemon({ script: "./api/server-mock.js" });
+  nodemon({
+    script: "./api/server-mock.js",
+    ext: "js",
+    ignore: ["*.js", "./app/**/*.js", "./build/**/*.js"]
+  });
 });
 
 // ----------------------------------------------------------------------------
 // Aggregated Tasks
 // ----------------------------------------------------------------------------
 gulp.task("build", function () {
-  return runSequence("clean", ["js", "jade", "css", "copy"]);
+  return runSequence("clean", ["js", "css", "copy"]);
 });
 
 gulp.task("start", function () {
