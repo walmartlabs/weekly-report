@@ -1,0 +1,272 @@
+// Report
+
+form {
+  border-radius: 7px;
+  background-color: white;
+  padding: 10px;
+}
+
+.form-body {
+  padding: 15px;
+  display: none;
+  &.is-expanded {
+    display: block;
+  }
+}
+
+.form-header {
+  padding: 5px;
+  border-bottom: 1px solid $defaultBorderColor;
+
+  &:hover {
+    cursor: pointer;
+  }
+
+  .headingB {
+    margin-bottom: 0px;
+  }
+}
+
+.status {
+  float: right;
+  display: none;
+
+  &.is-done {
+    display: block;
+  }
+}
+
+.submit-error {
+  display: none;
+
+  &.show {
+    display: block;
+    color: red;
+  }
+}
+
+
+.report-container {
+  width: 724px;
+  margin: 0 auto;
+  padding: 50px 22px;
+}
+
+.report-message {
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.report-image {
+  display: block;
+  margin: 0 auto;
+  border-radius: 4px;
+}
+
+.report-caption {
+  margin: 10px 0;
+  font-size: 12px;
+  text-align: center;
+}
+
+.reportHeading {
+  margin-bottom: 48px;
+}
+
+// Accomplishments
+.updating-list {
+  margin: 0;
+  padding: 0;
+}
+
+.updating-list li {
+  position: relative;
+
+  list-style-type: none;
+}
+
+.updating-list li:after {
+  @include icon-success();
+  opacity: 0;
+  transition: 0.3s ease opacity;
+}
+
+.filled .input {
+  padding-right: 36px;
+  border-color: $greenBorderColor;
+}
+
+.updating-list .filled::after {
+  opacity: 1;
+}
+
+/* File Upload Styles */
+
+.btn--fileinput {
+  position: relative;
+  margin: 0 0 20px;
+  overflow: hidden;
+}
+
+.btn--fileinput input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 0;
+  @include opacity(0);
+  transform: translate(-300px, 0) scale(4);
+  font-size: 23px;
+  direction: ltr;
+  cursor: pointer;
+}
+
+// LOCATE ME: ?
+// .fileupload-buttonbar .btn,
+// .fileupload-buttonbar .toggle {
+//   margin-bottom: 5px;
+// }
+
+.files {
+  padding: 0;
+}
+
+.filesList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.filesListItem {
+  position: relative;
+  display: inline-block;
+  margin: 0 ($defaultWhitespace/2) $defaultWhitespace;
+
+  vertical-align: top;
+  text-align: center;
+}
+
+.filesListItem-img {
+  padding: 2px;
+  border: 3px solid transparent;
+}
+
+.selected .filesListItem-img {
+  border: 3px solid $greenColor;
+}
+
+// Underlings
+.underling-list {
+  & > *:last-child {
+    margin-bottom: 0;
+  }
+  & > *:nth-last-child(2) {
+    margin-bottom: 0;
+  }
+}
+.underling-list li {
+  display: inline-block;
+  width: 45%;
+  margin: 0 ($defaultWhitespace/2) $defaultWhitespace ($defaultWhitespace/2);
+  padding: 0;
+  vertical-align: top;
+}
+
+.underling-list .person-card .media-body {
+  white-space: normal;
+}
+
+#email-warning form {
+  margin: 0;
+}
+
+#email-warning label {
+  margin: 0 10px;
+}
+
+
+// CREATE UNDERLING FORM
+.create-underling-form {
+  margin-bottom: $defaultWhitespace;
+  padding: $defaultWhitespace $defaultWhitespace 0;
+
+  border: 1px solid $defaultBorderColor;
+
+  .row label {
+    width: 50%;
+    float: left;
+
+    &:first-child {
+      padding-right: ($defaultWhitespace/2);
+    }
+
+    &:last-child {
+      padding-left: ($defaultWhitespace/2);
+    }
+  }
+}
+
+// LAYOUT
+.search {
+  margin-bottom: $defaultWhitespace;
+}
+
+.or {
+  margin-right: $defaultWhitespace;
+
+  text-transform: uppercase;
+}
+
+// Questions
+//
+// .questions-display           container for a list of questions
+// .question-display-item       <li> containing a single question & answer section
+// .question-display-answers    textarea or radio buttons or multiple choice
+//
+.questions-display .icon-move {
+  display: none;
+}
+
+.questions-display ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.question-display-item {
+  margin-bottom: $defaultWhitespace;
+}
+
+.question-display-item:last-child {
+  margin-bottom: 0;
+}
+
+.questions-display .remove-display-question {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  text-shadow: none;
+
+  color: $redColor;
+  font-size: 0.75em;
+  text-transform: uppercase;
+  i {
+    font-size: 1.25em;
+    vertical-align: text-top;
+  }
+}
+
+.question-display-answers {
+  margin-bottom: $defaultWhitespace;
+}
+
+.question-display textarea {
+  width: 100%;
+}
+
+.questions-display input[type="radio"] {
+  margin: 0 ($defaultWhitespace/2) ($defaultWhitespace) ($defaultWhitespace);
+}
+
+// Submit
+.form-footer {
+}

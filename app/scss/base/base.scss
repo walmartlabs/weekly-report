@@ -1,0 +1,37 @@
+// ------------------------------------
+// BASE:
+// styles are applied directly to element using an element selector
+// ------------------------------------
+
+html {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+body {
+  background: $bgColor;
+  color: $textColor;
+  font-family: $sansFont;
+  font-size: 18px;
+  line-height: 1.4;
+  text-rendering: optimizeLegibility;
+}
+
+p {
+  margin: 0 0 0.4em 0;
+  font-size: 18px;
+  font-weight: normal;
+  line-height: 1.4;
+}
+
+section {
+  margin: 0 0 $defaultWhitespace*2 0;
+}

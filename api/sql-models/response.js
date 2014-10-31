@@ -24,7 +24,7 @@ module.exports = function (sqlize, DataTypes) {
     completedAt: {
       type: DataTypes.DATE
     },
-    howsItGoing: {
+    moralePicker: {
       type: DataTypes.TEXT
     },
     // TODO[7]: Enforce JSON array for accomplishments
@@ -36,9 +36,6 @@ module.exports = function (sqlize, DataTypes) {
     },
     privateFeedback: {
       type: DataTypes.TEXT
-    },
-    reportedMorale: {
-      type: DataTypes.STRING(SHORT_CHARS)
     }
   });
 

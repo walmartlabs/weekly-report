@@ -10,7 +10,7 @@ module.exports = {
   context: path.join(__dirname, "app"),
   entry: "./js/app",
   output: {
-    path: path.join(__dirname, "build"),
+    path: path.join(__dirname, "build", "assets"),
     filename: "bundle.js"
   },
   optimize: {

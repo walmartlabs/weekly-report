@@ -23,8 +23,7 @@ var register = function (plugin, options, next) {
   plugin.expose("models", {
     Survey: Survey,
     Response: Response,
-    sqlize: sqlize,
-    Sqlize: Sqlize
+    sqlize: sqlize
   });
 
   next();

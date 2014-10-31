@@ -46,12 +46,8 @@ gulp.task("open-browser", function () {
 });
 
 gulp.task("copy", function () {
-  gulp.src("./app/templates/index.html")
-    .pipe(gulp.dest("./build"));
-  gulp.src("./app/assets/images/*")
+  gulp.src("./app/assets/**/*")
     .pipe(gulp.dest("./build/assets"));
-  gulp.src("./node_modules/font-awesome/fonts/*")
-    .pipe(gulp.dest("./build/assets/"));
 });
 
 gulp.task("css", function () {
@@ -61,7 +57,7 @@ gulp.task("css", function () {
     }))
     .pipe(autoprefixer())
     .pipe(cssmin())
-    .pipe(gulp.dest("./build/css"))
+    .pipe(gulp.dest("./build/assets/css"))
     .pipe(livereload());
 });
 
@@ -92,6 +88,7 @@ var _webpack = function (cfg) {
         cached: false
       }));
 
+      livereload.changed;
       done();
     });
   };
@@ -166,7 +163,6 @@ gulp.task("jshint:frontend", function () {
     .src(jsAppSources)
     .pipe(jshint(_.merge({}, jshintCfg, {
       browser: true,
-      jquery: true,
       predef: [
         "require"
       ]

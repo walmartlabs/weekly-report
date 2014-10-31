@@ -3,6 +3,9 @@ var moment = require("moment");
 
 var liveServer = require("./server-single");
 
+// TODO: This is unrealistic as serving up reponses
+// for two different users. When add survey POST that
+// takes many projects can update this.
 liveServer(null, function (err, server) {
   if (err) { throw err; }
 
@@ -31,13 +34,26 @@ liveServer(null, function (err, server) {
       return record.token;
     }).join("...");
 
-    server.route({
-      method: "GET",
-      path: "/dev/responses",
-      handler: function (req, res) {
-        // direct to actual route now that tokens are known
-        res.redirect("/responses/" + link);
+    // Add result for one of those records
+    server.inject({
+      method: "POST",
+      url: "/responses",
+      payload: {
+        token: link.split("...")[0]
       }
+    }, function (res) {
+      if (res.statusCode !== 200) {
+        throw new Error("failed to complete one response");
+      }
+
+      // Reroute to valid responses GET with known tokens
+      server.route({
+        method: "GET",
+        path: "/dev/responses",
+        handler: function (req, res) {
+          res.redirect("/responses/" + link);
+        }
+      });
     });
   });
 });

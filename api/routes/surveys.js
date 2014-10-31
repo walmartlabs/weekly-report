@@ -37,10 +37,7 @@ module.exports = function (server) {
           });
 
           return models.Response.bulkCreate(responses);
-        }, utils.handleWriteErr(
-          req, res, "Failed to create new survey record")
-        )
-
+        })
         // Finally respond to client with new survey record
         .then(function (responseRecords) {
           res({
@@ -48,9 +45,8 @@ module.exports = function (server) {
             newResponses: responseRecords,
             msg: "New survey and empty responses created"
           });
-        }, utils.handleWriteErr(
-            req, res, "Failed to create new response records")
-        );
+        })
+        .catch(utils.handleWriteErr(req, res));
     }
   });
 };

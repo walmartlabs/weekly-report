@@ -88,17 +88,62 @@ describe("api/routes/", function () {
 
   describe("api/routes/responses", function () {
 
-    it("should get response view with form tag for each report",
-      function (done) {
+    var tokens;
 
-      // create `...` joined list of tokens to fetch from server
-      var tokens = _.map(responseRecords, function (record) {
+    // create `...` joined list of tokens to fetch from server
+    before(function () {
+      tokens = _.map(responseRecords, function (record) {
         return record.token;
       }).join("...");
+    });
 
+    it("should GET response view if valid tokens", function (done) {
       server.inject({
         method: "GET",
         url: "/responses/" + tokens
+      }, function (res) {
+        test.done(done, function () {
+          expect(res.statusCode).to.equal(200);
+        });
+      });
+    });
+
+    it("should GET error if non valid tokens", function (done) {
+
+      // create `...` joined list of tokens to fetch from server
+      var badTokens = "badtoken1...badtoken2";
+
+      server.inject({
+        method: "GET",
+        url: "/responses/" + badTokens
+      }, function (res) {
+        test.done(done, function () {
+          expect(res.statusCode).to.equal(404);
+        });
+      });
+    });
+
+    it("should return new response record on valid POST", function (done) {
+
+      var completedResponse = {
+        token: tokens.split("...")[0],
+        moralePicker: 1,
+        accomplishments: [
+          "one",
+          "two",
+          "three"
+        ],
+        blockers: [
+          "four",
+          "five"
+        ],
+        privateFeedback: "something private"
+      };
+
+      server.inject({
+        method: "POST",
+        url: "/responses",
+        payload: completedResponse
       }, function (res) {
         test.done(done, function () {
           expect(res.statusCode).to.equal(200);

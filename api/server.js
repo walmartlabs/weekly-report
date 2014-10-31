@@ -4,6 +4,8 @@
  *
  * @exports {function}  With server passed to callback
  */
+var path = require("path");
+
 var _ = require("lodash");
 var dbSequelized = require("./plugins/db-sequelized");
 var Good = require("good");
@@ -18,6 +20,18 @@ var getServer = function (options, callback) {
   // Add routes to server
   surveyRoutes(server);
   responseRoutes(server);
+
+  // Add static route
+  server.route({
+    method: "GET",
+    path: "/{param*}",
+    handler: {
+      directory: {
+        path: path.resolve(__dirname, "../build")
+      }
+    }
+  });
+
 
   options = options || {};
 
