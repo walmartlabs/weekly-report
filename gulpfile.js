@@ -6,10 +6,9 @@ var fs = require("fs");
 var _ = require("lodash");
 var autoprefixer = require("gulp-autoprefixer");
 var cssmin = require("gulp-cssmin");
-var connect = require("connect");
 var gulp = require("gulp");
+var gutil = require("gulp-util");
 var clean = require("gulp-clean");
-var http = require("http");
 var jscs = require("gulp-jscs");
 var jshint = require("gulp-jshint");
 var livereload = require("gulp-livereload");
@@ -19,7 +18,9 @@ var open = require("open");
 var path = require("path");
 var runSequence = require("run-sequence");
 var sass = require("gulp-sass");
-var serveStatic = require("serve-static");
+var webpack = require("webpack");
+
+var buildCfg = require("./webpack.config.js");
 
 // ----------------------------------------------------------------------------
 // Helpers
@@ -33,25 +34,23 @@ var _jshintCfg = function (name) {
 // ----------------------------------------------------------------------------
 // CSS/HTML Development Tasks
 // ----------------------------------------------------------------------------
-var app = connect()
-  .use(serveStatic(__dirname));
-
 var options = {
   "port": 8000,
   "host": "localhost",
   "scssPath": "./app/scss/"
 };
 
-gulp.task("connect", function () {
-  return http.createServer(app).listen(8000);
-});
-
 gulp.task("open-browser", function () {
   return open(path.join("http://" + options.host + ":" +
-    options.port, "build"));
+    options.port, "dev", "responses"));
 });
 
-var css = function () {
+gulp.task("copy", function () {
+  return gulp.src("./app/assets/**/*")
+    .pipe(gulp.dest("./build/assets"));
+});
+
+var runCss = function () {
   return gulp.src(options.scssPath + "main.scss")
     .pipe(sass({
       errLogToConsole: true
@@ -61,11 +60,10 @@ var css = function () {
     .pipe(gulp.dest("./build/assets/css"));
 };
 
-gulp.task("css", css);
+gulp.task("css", runCss);
 
-gulp.task("copy", function () {
-  gulp.src("./app/js/**/*.js")
-    .pipe(gulp.dest("./build/assets/js"));
+gulp.task("css-livereload", function () {
+  runCss.pipe(livereload());
 });
 
 gulp.task("clean", function () {
@@ -73,12 +71,46 @@ gulp.task("clean", function () {
       .pipe(clean());
 });
 
+gulp.task("server:dev", function (cb) {
+  return nodemon({
+    script: "node ./api/server-mock",
+    ext: "js"
+  })
+  .on("start", cb);
+});
+
+// Create webpack task.
+var _webpack = function (cfg) {
+  var compiler = webpack(cfg); // Single compiler for caching.
+
+  return function (done) {
+    compiler.run(function (err, stats) {
+      if (err) { throw new gutil.PluginError("webpack", err); }
+
+      gutil.log("[webpack]", stats.toString({
+        hash: true,
+        colors: true,
+        cached: false
+      }));
+
+      livereload.changed;
+      done();
+    });
+  };
+};
+
+gulp.task("js", _webpack(_.merge({}, buildCfg, {
+  optimize: {
+    minimize: false
+  }
+})));
+
 gulp.task("watch", function () {
   livereload.listen();
-  gulp.watch(options.scssPath + "**/*.scss", ["css-live"])
-    .on("change", livereload.changed);
-  gulp.watch("./src/js/**/*.js", ["copy"])
-    .on("change", livereload.changed);
+
+  gulp.watch(options.scssPath + "**/*.scss", ["css-livereload"]);
+  gulp.watch("api/views/**/*.jade").on("change", livereload.changed);
+  gulp.watch("app/js/**/*.js", ["js"]);
 });
 
 // ----------------------------------------------------------------------------
@@ -92,10 +124,6 @@ var jsSources = [
 
 var jsTestSources = [
   "test/api/**/*.js"
-];
-
-var jsMockSources = [
-  "api/mock/**/*.js"
 ];
 
 var jsAppSources = [
@@ -140,17 +168,9 @@ gulp.task("jshint:frontend", function () {
     .src(jsAppSources)
     .pipe(jshint(_.merge({}, jshintCfg, {
       browser: true,
-      jquery: true
-    })))
-    .pipe(jshint.reporter("default"))
-    .pipe(jshint.reporter("fail"));
-});
-
-gulp.task("jshint:mock", function () {
-  return gulp
-    .src(jsMockSources)
-    .pipe(jshint(_.merge({}, jshintCfg, {
-      node: true,
+      predef: [
+        "require"
+      ]
     })))
     .pipe(jshint.reporter("default"))
     .pipe(jshint.reporter("fail"));
@@ -169,12 +189,6 @@ gulp.task("jscs", function () {
       jsAppSources,
       jsTestSources
     ))
-    .pipe(jscs());
-});
-
-gulp.task("jscs:mock", function () {
-  return gulp
-    .src(jsMockSources)
     .pipe(jscs());
 });
 
@@ -200,21 +214,24 @@ gulp.task("mocha", function () {
 // Nodemon
 // ----------------------------------------------------------------------------
 gulp.task("server:dev", function () {
-  nodemon({ script: "./api/server.js" });
+  nodemon({
+    script: "./api/server-mock.js",
+    ext: "js",
+    ignore: ["*.js", "./app/**/*.js", "./build/**/*.js"]
+  });
 });
 
 // ----------------------------------------------------------------------------
 // Aggregated Tasks
 // ----------------------------------------------------------------------------
 gulp.task("build", function () {
-  runSequence("clean", ["css", "copy"]);
+  return runSequence("clean", ["css"]);
 });
 
 gulp.task("start", function () {
-  runSequence("build", "cli", "open-browser", "connect", "watch");
+  runSequence("build", "server:dev", "open-browser", "watch");
 });
 
 gulp.task("check:dev",  ["jshint", "jscs", "mocha"]);
-gulp.task("check",      ["jshint", "jshint:mock",
-                         "jscs", "jscs:mock", "mocha"]);
+gulp.task("check",      ["jshint", "jscs", "mocha"]);
 gulp.task("default",    ["check", "build"]);

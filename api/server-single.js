@@ -1,3 +1,4 @@
+var _ = require("lodash");
 
 var getServer = require("./server.js");
 
@@ -13,12 +14,31 @@ var exitWithError = function (err) {
   process.exit(1);
 };
 
-getServer(null, function (err, server) {
-  if (err) {
-    return exitWithError(err);
+var liveServer = function (options, callback) {
+  if (!_.isFunction(callback)) {
+    exitWithError(new Error("callback not a function"));
   }
 
-  server.start(function () {
-    server.log("info", "Server running at: " + server.info.uri);
+  getServer(options, function (err, server) {
+    if (err) {
+      return callback(err);
+    }
+
+    server.start(function () {
+      server.log("info", "Server running at: " + server.info.uri);
+
+      callback(null, server);
+    });
   });
-});
+};
+
+// Start server if this is executed module
+if (!module.parent) {
+  liveServer(null, function (err) {
+    if (err) {
+      exitWithError(err);
+    }
+  });
+}
+
+module.exports = liveServer;

@@ -12,7 +12,8 @@ var stdizer = function (object) {
   return _.omit(object, ["id", "createdAt", "updatedAt"]);
 };
 
-describe("api/routes/reports", function () {
+describe("api/routes/", function () {
+
   var server;
 
   before(function (done) {
@@ -36,39 +37,130 @@ describe("api/routes/reports", function () {
     emails: ["hi@gmail.com", "lo@gmail.com"]
   };
 
-  it("should populate records and respond with survey record", function (done) {
-    var survey;
+  var responseRecords;
 
-    server.inject({
-      method: "POST",
-      url: "/surveys",
-      payload: testSurvey
-    }, function (res) {
-      var resBody = JSON.parse(res.payload);
-      // Go to db and get record
-      var models = server.plugins.sqlModels.models;
-      models.Survey.find({
-        where: { projectName: testSurvey.projectName }
-      })
-        .then(function (foundSurvey) {
-          survey = foundSurvey;
-          return models.Response.findAll({
-            where: { SurveyId: survey.dataValues.id }
-          });
+  describe("api/routes/reports", function () {
+
+    it("should populate records and respond with survey record",
+      function (done) {
+
+      var survey;
+
+      server.inject({
+        method: "POST",
+        url: "/surveys",
+        payload: testSurvey
+      }, function (res) {
+        var resBody = JSON.parse(res.payload);
+        responseRecords = resBody.newResponses;
+
+        // Go to db and get record
+        var models = server.plugins.sqlModels.models;
+        models.Survey.find({
+          where: { projectName: testSurvey.projectName }
         })
-        .then(function (response) {
-          test.done(done, function () {
-            expect(res.statusCode).to.equal(200);
-            expect(stdizer(resBody.newSurvey))
-              .to.deep.equal(_.omit(testSurvey, "emails"));
-            expect(stdizer(survey.dataValues))
-              .to.deep.equal(_.omit(testSurvey, "emails"));
-            expect(response[0].dataValues.email)
-              .to.equal(testSurvey.emails[0]);
-            expect(response[1].dataValues.email)
-              .to.equal(testSurvey.emails[1]);
+          .then(function (foundSurvey) {
+            survey = foundSurvey;
+            return models.Response.findAll({
+              where: { SurveyId: survey.dataValues.id }
+            });
+          })
+          .then(function (response) {
+            test.done(done, function () {
+              // API response assertions
+              expect(res.statusCode).to.equal(200);
+              expect(stdizer(resBody.newSurvey))
+                .to.deep.equal(_.omit(testSurvey, "emails"));
+              expect(resBody.newResponses).to.not.be.null;
+
+              // Database record assertions
+              expect(stdizer(survey.dataValues))
+                .to.deep.equal(_.omit(testSurvey, "emails"));
+              expect(response[0].dataValues.email)
+                .to.equal(testSurvey.emails[0]);
+              expect(response[1].dataValues.email)
+                .to.equal(testSurvey.emails[1]);
+            });
           });
+      });
+    });
+  });
+
+  describe("api/routes/responses", function () {
+    var tokens;
+
+    // create `...` joined list of tokens to fetch from server
+    before(function () {
+      tokens = _.map(responseRecords, function (record) {
+        return record.token;
+      }).join("...");
+    });
+
+    it("should GET response view if valid tokens", function (done) {
+      server.inject({
+        method: "GET",
+        url: "/responses/" + tokens
+      }, function (res) {
+        test.done(done, function () {
+          expect(res.statusCode).to.equal(200);
+          expect(res.headers["content-type"])
+            .to.equal("text/html; charset=utf-8");
         });
+      });
+    });
+
+    it("should GET error if non valid tokens", function (done) {
+
+      // create `...` joined list of tokens to fetch from server
+      var badTokens = "badtoken1...badtoken2";
+
+      server.inject({
+        method: "GET",
+        url: "/responses/" + badTokens
+      }, function (res) {
+        test.done(done, function () {
+          expect(res.statusCode).to.equal(404);
+        });
+      });
+    });
+
+    it("should POST data and return 200 on valid resopnse", function (done) {
+
+      var completedResponse = {
+        token: tokens.split("...")[0],
+        moralePicker: "1",
+        accomplishments: [
+          "one",
+          "two",
+          "three"
+        ],
+        blockers: [
+          "four",
+          "five"
+        ],
+        privateFeedback: "something private"
+      };
+
+      var completedResponseJSON = _.mapValues(
+        _.omit(completedResponse, "token"), function (item) {
+
+        return JSON.stringify(item);
+      });
+
+      server.inject({
+        method: "POST",
+        url: "/responses",
+        payload: completedResponse
+      }, function (res) {
+        var models = server.plugins.sqlModels.models;
+        models.Response.find({ where: {token: tokens.split("...")[0]}})
+          .then(function (response) {
+            test.done(done, function () {
+              expect(response.dataValues).to.contain(completedResponseJSON);
+              expect(res.statusCode).to.equal(200);
+            });
+          });
+      });
     });
   });
 });
