@@ -46,19 +46,24 @@ gulp.task("open-browser", function () {
 });
 
 gulp.task("copy", function () {
-  gulp.src("./app/assets/**/*")
+  return gulp.src("./app/assets/**/*")
     .pipe(gulp.dest("./build/assets"));
 });
 
-gulp.task("css", function () {
+var runCss = function () {
   return gulp.src(options.scssPath + "main.scss")
     .pipe(sass({
       errLogToConsole: true
     }))
     .pipe(autoprefixer())
     .pipe(cssmin())
-    .pipe(gulp.dest("./build/assets/css"))
-    .pipe(livereload());
+    .pipe(gulp.dest("./build/assets/css"));
+};
+
+gulp.task("css", runCss);
+
+gulp.task("css-livereload", function () {
+  runCss.pipe(livereload());
 });
 
 gulp.task("clean", function () {
@@ -103,7 +108,7 @@ gulp.task("js", _webpack(_.merge({}, buildCfg, {
 gulp.task("watch", function () {
   livereload.listen();
 
-  gulp.watch(options.scssPath + "**/*.scss", ["css"]);
+  gulp.watch(options.scssPath + "**/*.scss", ["css-livereload"]);
   gulp.watch("api/views/**/*.jade").on("change", livereload.changed);
   gulp.watch("app/js/**/*.js", ["js"]);
 });
@@ -220,7 +225,7 @@ gulp.task("server:dev", function () {
 // Aggregated Tasks
 // ----------------------------------------------------------------------------
 gulp.task("build", function () {
-  return runSequence("clean", ["js", "css", "copy"]);
+  return runSequence("clean", ["css"]);
 });
 
 gulp.task("start", function () {
