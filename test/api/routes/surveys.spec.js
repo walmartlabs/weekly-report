@@ -87,7 +87,6 @@ describe("api/routes/", function () {
   });
 
   describe("api/routes/responses", function () {
-
     var tokens;
 
     // create `...` joined list of tokens to fetch from server
@@ -104,6 +103,8 @@ describe("api/routes/", function () {
       }, function (res) {
         test.done(done, function () {
           expect(res.statusCode).to.equal(200);
+          expect(res.headers["content-type"])
+            .to.equal("text/html; charset=utf-8");
         });
       });
     });
@@ -123,11 +124,11 @@ describe("api/routes/", function () {
       });
     });
 
-    it("should return new response record on valid POST", function (done) {
+    it("should POST data and return 200 on valid resopnse", function (done) {
 
       var completedResponse = {
         token: tokens.split("...")[0],
-        moralePicker: 1,
+        moralePicker: "1",
         accomplishments: [
           "one",
           "two",
@@ -140,14 +141,25 @@ describe("api/routes/", function () {
         privateFeedback: "something private"
       };
 
+      var completedResponseJSON = _.mapValues(
+        _.omit(completedResponse, "token"), function (item) {
+
+        return JSON.stringify(item);
+      });
+
       server.inject({
         method: "POST",
         url: "/responses",
         payload: completedResponse
       }, function (res) {
-        test.done(done, function () {
-          expect(res.statusCode).to.equal(200);
-        });
+        var models = server.plugins.sqlModels.models;
+        models.Response.find({ where: {token: tokens.split("...")[0]}})
+          .then(function (response) {
+            test.done(done, function () {
+              expect(response.dataValues).to.contain(completedResponseJSON);
+              expect(res.statusCode).to.equal(200);
+            });
+          });
       });
     });
   });
