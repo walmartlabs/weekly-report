@@ -1,0 +1,24 @@
+// STATES
+
+// .is-collapsed    show FontAwesome right arrow icon
+// .is-expanded     show FontAwesome down arrow icon
+
+.is-collapsed {
+  .iconToggle {
+    margin-left: -28px;
+    width: 24px;
+    &:before {
+      content: "\f105";
+    }
+  }
+}
+
+.is-expanded {
+  .iconToggle {
+    margin-left: -32px;
+    width: 28px !important;
+    &:before {
+      content: "\f107";
+    }
+  }
+}

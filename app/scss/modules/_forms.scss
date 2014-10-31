@@ -1,0 +1,61 @@
+// ------------------------------------
+// FORMS:
+// forms, inputs, textareas
+// ------------------------------------
+
+// DEFAULT INPUT
+.input, .textarea {
+  width: 100%;
+  margin: 0 0 $defaultWhitespace 0;
+  padding: 0.4em 0.5em;
+  border: 2px solid $defaultBorderColor;
+
+  background-color: #fff;
+  font-family: $sansFont;
+  font-size: 18px;
+  line-height: 1.4;
+  outline: none;
+  text-shadow: none;
+}
+
+// DEFAULT SELECT styling is tricky so leaving it alone
+.select {
+  margin: 0 0 $defaultWhitespace 0;
+  padding: 0.4em 0.5em;
+
+  outline: none;
+  text-shadow: none;
+}
+
+// CHECKBOXES
+.checkbox {
+  margin: 0 0 $defaultWhitespace 0;
+
+  input[type="checkbox"],
+  input[type="radio"] {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+// Find a team member
+.search {
+  position: relative;
+
+  &:before {
+    content: "\f002";
+
+    position: absolute;
+    top: 5px;
+    left: 10px;
+
+    color: $grayColor;
+    font-size: 22px;
+    font-family: "FontAwesome";
+    z-index: 1;
+  }
+}
+.search-query {
+  margin-bottom: ($defaultWhitespace/3);
+  padding-left: 36px;
+}
