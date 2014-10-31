@@ -40,7 +40,7 @@ $(function () {
   // Handle form submits
   $("form").submit(function (event) {
     var self = $(this);
-    // TODO[]: Are there required fields?
+    // TODO[8]: Are there required fields?
 
     var data = $(this).serializeArray();
 
