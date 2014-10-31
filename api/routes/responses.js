@@ -50,9 +50,7 @@ module.exports = function (server) {
 
           return response.save();
         })
-        .then(function (savedData) {
-          res(savedData);
-        })
+        .then(res)
         .catch(utils.handleWriteErr(req, res));
     }
   });
