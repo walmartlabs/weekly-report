@@ -1,0 +1,52 @@
+// ------------------------------------
+// MORALE PICKER
+// Bad/Neutral/Good faces: pick one!
+// ------------------------------------
+
+.morale-picker-container {
+  margin-bottom: $defaultWhitespace*2;
+  padding: 0;
+}
+
+.morale-item {
+  width: 32%;
+  display: inline-block;
+}
+
+.morale-picker-label {
+  height: 112px;
+  display: block;
+
+  background-size: 116px 112px;
+  background-repeat: no-repeat;
+  background-position: center;
+  @include opacity(0.25);
+  text-indent: -999em;
+  transition: opacity 0.3s ease;
+}
+
+.morale-picker input:checked + label {
+  opacity: 1;
+}
+
+.morale-picker label:hover {
+  opacity: 1;
+}
+
+.morale-picker-input {
+  display: none;
+  position: relative;
+  top: 42px;
+}
+
+.morale-1 {
+  background-image: url('/assets/images/morale1.gif');
+}
+
+.morale-2 {
+  background-image: url('/assets/images/morale2.gif');
+}
+
+.morale-3 {
+  background-image: url('/assets/images/morale3.gif');
+}

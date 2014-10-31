@@ -1,0 +1,41 @@
+// ------------------------------------
+// CONTENT:
+// Universal text and content styles reside here
+// ------------------------------------
+
+.headingA {
+  color: #000;
+  font-family: $headlineFont;
+  font-size: 60px;
+  font-weight: bold;
+  line-height: 1.4;
+}
+
+.headingB {
+  margin: 0 0 ($defaultWhitespace) 0;
+  color: #000;
+  font-family: $headlineFont;
+  font-size: 26px;
+  font-weight: normal;
+  line-height: 1.2;
+}
+
+.headingB-subheading {
+  color: $textColor;
+  font-family: $sansFont;
+  font-size: 18px;
+  line-height: 1.4;
+}
+
+.headingC {
+  margin: 0 0 0.4em 0;
+
+  font-family: $headlineFont;
+  font-size: 20px;
+  font-weight: normal;
+  line-height: 1.6;
+}
+
+.darkestColor {
+  color: #000;
+}
