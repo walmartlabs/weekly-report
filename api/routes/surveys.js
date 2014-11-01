@@ -5,48 +5,88 @@
  * @param   {object}    server     server instance
  */
 var _ = require("lodash");
-var Chance = require("chance");
-var chance = new Chance();
-
+var when = require("when");
 var utils = require("../lib/utils");
 
 module.exports = function (server) {
-  var surveyRecord;
 
-  // Create new survey
+  // Create new surveys
   server.route({
     method: "POST",
-    path: "/surveys",
+    path: "/surveys/batch",
     handler: function (req, res) {
-      var survey = req.payload;
+      // TODO[6]: Verify data
+      var surveys = req.payload;
       var models = req.server.plugins.sqlModels.models;
 
-      // TODO[6]: Verify data
-      // First insert to Survey table
-      models.Survey.create(survey)
-
-        // Second add record for each email address
-        .then(function (newRecord) {
-          surveyRecord = newRecord;
-          var responses = _.map(survey.emails, function (email) {
-            return {
-              token: chance.hash({ length: 15 }),
-              email: email,
-              SurveyId: surveyRecord.id
-            };
-          });
-
-          return models.Response.bulkCreate(responses);
+      // First create a batch number
+      models.SurveyBatch.create()
+        .then(function (batch) {
+          return when.all(_.map(surveys, function (survey) {
+            return utils.createSurvey(_.extend(survey, {
+              SurveyBatchId: batch.id
+            }), models);
+          }));
         })
-        // Finally respond to client with new survey record
-        .then(function (responseRecords) {
-          res({
-            newSurvey: surveyRecord,
-            newResponses: responseRecords,
-            msg: "New survey and empty responses created"
-          });
+        .then(function (surveys) {
+          res(_.map(surveys, function (survey) {
+            return survey.dataValues;
+          }));
         })
         .catch(utils.handleWriteErr(req, res));
+    }
+  });
+
+  // Get survey and array of object of response tokens by email
+  server.route({
+    method: "GET",
+    path: "/surveys/batch/{number}",
+    handler: function (req, res) {
+      var models = req.server.plugins.sqlModels.models;
+
+      models.Survey.findAll({
+        where: {
+          SurveyBatchId: req.params.number
+        },
+        include: [models.Response]
+      })
+     .then(function (surveys) {
+        // Convert survey.responses to array of dataValues
+        _.each(surveys, function (survey) {
+
+          survey.responses = _.map(survey.responses, function (response) {
+            return response.dataValues;
+          });
+        });
+
+        res(surveys);
+      })
+      .catch(utils.handleWriteErr(req, res));
+    }
+  });
+
+  // Get survey and array of object of response tokens by email
+  server.route({
+    method: "GET",
+    path: "/surveys/{number}",
+    handler: function (req, res) {
+      var models = req.server.plugins.sqlModels.models;
+      var surveyRecord;
+      models.Survey.find(req.params.number)
+        .then(function (survey) {
+          surveyRecord = survey;
+          return surveyRecord.getResponses();
+        })
+        .then(function (responses) {
+          var responseDataArray = _.map(responses, function (response) {
+            return response.dataValues;
+          });
+
+          res({
+            survey: surveyRecord.dataValues,
+            responses: responseDataArray
+          });
+        });
     }
   });
 };

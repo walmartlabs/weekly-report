@@ -13,6 +13,8 @@
  * @param {string}  msg   The message to send with response
  */
 var _ = require("lodash");
+var Chance = require("chance");
+var chance = new Chance();
 var when = require("when");
 
 // For use in .catch.
@@ -52,7 +54,34 @@ var attachSurvey = function (response) {
   });
 };
 
+var createSurvey = function (surveyData, models) {
+  return when.promise(function (resolve, reject) {
+    var surveyRecord;
+
+    // Create survey record
+    models.Survey.create(surveyData)
+      // Add record for each email address
+      .then(function (newRecord) {
+        surveyRecord = newRecord;
+        var responses = _.map(surveyData.emails, function (email) {
+          return {
+            token: chance.hash({ length: 15 }),
+            email: email,
+            SurveyId: surveyRecord.id
+          };
+        });
+        return models.Response.bulkCreate(responses);
+      })
+      // Finally respond to client with new survey record
+      .then(function () {
+        resolve(surveyRecord);
+      })
+      .catch(reject);
+  });
+};
+
 module.exports = {
   handleWriteErr: handleWriteErr,
-  attachSurvey: attachSurvey
+  attachSurvey: attachSurvey,
+  createSurvey: createSurvey
 };
