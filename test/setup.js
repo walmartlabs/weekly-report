@@ -11,3 +11,5 @@ chai.use(sinonChai);
 global.sinon = require("sinon");
 global.expect = chai.expect;
 global.test = test;
+
+process.env.NODE_ENV = "test";
