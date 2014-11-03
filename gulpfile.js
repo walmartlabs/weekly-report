@@ -225,7 +225,7 @@ gulp.task("server:dev", function () {
 // Aggregated Tasks
 // ----------------------------------------------------------------------------
 gulp.task("build", function () {
-  return runSequence("clean", ["css"]);
+  return runSequence("clean", ["js", "css", "copy"]);
 });
 
 gulp.task("start", function () {

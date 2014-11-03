@@ -35,11 +35,31 @@ var getServer = function (options, callback) {
 
   options = options || {};
 
+  var goodOptions;
+
+  // Set logging for testing (only log errors)
+  if (process.env.NODE_ENV === "test") {
+    var reporter = new Good.GoodConsole();
+
+    // Only log "log" events that are not info level
+    reporter._filter = function (event, eventData) {
+      if (eventData.event === "log" && !_.contains(eventData.tags, "info")) {
+        return true;
+      }
+      return false;
+    };
+
+    goodOptions = {
+      reporters: [reporter]
+    };
+  }
+
   // Add sequelize models
   server.pack.register([{
     // Add Good logger
     // TODO[4]: Build Winston into plugin
-    plugin: Good
+    plugin: Good,
+    options: goodOptions
   }, {
     plugin: dbSequelized,
     options: {

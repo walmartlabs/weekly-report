@@ -3,6 +3,7 @@ var Sqlize = require("sequelize");
 
 var surveySchema = require("../sql-models/survey");
 var responseSchema = require("../sql-models/response");
+var surveyBatchSchema = require("../sql-models/survey-batch");
 
 var register = function (plugin, options, next) {
   options.server.log("info", "Using dialect: " + options.dialect);
@@ -13,9 +14,11 @@ var register = function (plugin, options, next) {
     _.omit(options, ["server", "database", "user", "pass"]));
 
   var Survey = surveySchema(sqlize, Sqlize);
+  var SurveyBatch = surveyBatchSchema(sqlize, Sqlize);
   var Response = responseSchema(sqlize, Sqlize);
 
   // Relationships
+  SurveyBatch.hasMany(Survey);
   Survey.hasMany(Response);
   Response.belongsTo(Survey);
 
@@ -23,6 +26,7 @@ var register = function (plugin, options, next) {
   plugin.expose("models", {
     Survey: Survey,
     Response: Response,
+    SurveyBatch: SurveyBatch,
     sqlize: sqlize
   });
 

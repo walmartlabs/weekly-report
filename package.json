@@ -12,6 +12,7 @@
     "lodash": "2.4.1",
     "moment": "2.8.3",
     "mysql": "2.5.2",
+    "recluster": "0.3.7",
     "sequelize": "2.0.0-rc2",
     "sqlite3": "3.0.2",
     "when": "3.5.2"

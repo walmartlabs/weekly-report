@@ -8,7 +8,6 @@ var path = require("path");
 
 var _ = require("lodash");
 var jade = require("jade");
-var when = require("when");
 
 var utils = require("../lib/utils");
 
@@ -55,20 +54,20 @@ module.exports = function (server) {
     }
   });
 
+  // Get views of responses to be filled out
+  // based on a list of tokens
   server.route({
     method: "GET",
     path: "/responses/{tokens}",
     handler: function (req, res) {
       var models = req.server.plugins.sqlModels.models;
-
       var tokens = req.params.tokens.split("...");
-      models.Response.findAll({ where: { token: tokens }})
-      .then(function (responses) {
-        var getSurveys = _.map(responses, function (response) {
-          return utils.attachSurvey(response);
-        });
 
-        return when.all(getSurveys);
+      models.Response.findAll({
+        where: {
+          token: tokens
+        },
+        include: [models.Survey]
       })
       .then(function (responses) {
         // Must have sent a bad link
@@ -82,7 +81,7 @@ module.exports = function (server) {
           responses: _.map(responses, function (response) {
             return {
               completed: !!response.get("completedAt"),
-              projectName: response.survey.get("projectName"),
+              projectName: response.get("Survey").get("projectName"),
               token: response.get("token")
             };
           })

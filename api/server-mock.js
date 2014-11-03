@@ -3,36 +3,46 @@ var moment = require("moment");
 
 var liveServer = require("./server-single");
 
-// TODO[9]: This is unrealistic as serving up reponses
-// for two different users. When add survey POST that
-// takes many projects can update this.
 liveServer(null, function (err, server) {
   if (err) { throw err; }
 
   // load db with test data
-  var testSurvey = {
-    periodStart: moment("20140101", "YYYYMMDD").toISOString(),
-    periodEnd: moment("20140115", "YYYYMMDD").toISOString(),
-    projectName: "Foo Project",
-    creatorEmail: "creator@gmail.com",
-    emails: ["hi@gmail.com", "lo@gmail.com"]
-  };
+  // Test 'batch'
+  var testSurveys = [
+    {
+      periodStart: moment("20140101", "YYYYMMDD").toISOString(),
+      periodEnd: moment("20140115", "YYYYMMDD").toISOString(),
+      projectName: "Foo Project",
+      creatorEmail: "creator@example.com",
+      emails: ["hi@example.com", "lo@example.com"]
+    },
+    {
+      periodStart: moment("20140115", "YYYYMMDD").toISOString(),
+      periodEnd: moment("20140130", "YYYYMMDD").toISOString(),
+      projectName: "Bar Project",
+      creatorEmail: "creator3@example.com",
+      emails: ["hi@example.com", "hilo@example.com"]
+    }
+  ];
 
   // Add records
   server.inject({
     method: "POST",
-    url: "/surveys",
-    payload: testSurvey
+    url: "/surveys/batch",
+    payload: testSurveys
   }, function (res) {
     if (res.statusCode !== 200) {
       throw new Error("records failed to load");
     }
 
+    var body = JSON.parse(res.payload);
+
     // Create link from newly created record tokens
-    var responseRecords = JSON.parse(res.payload).newResponses;
-    var link = _.map(responseRecords, function (record) {
-      return record.token;
-    }).join("...");
+    var link = _.find(body.tokensByEmail, function (response) {
+      return response.email === "hi@example.com";
+    })
+      .tokens
+      .join("...");
 
     // Add result for one of those records
     server.inject({
