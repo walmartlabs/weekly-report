@@ -76,11 +76,9 @@ var tokenByEmailFromBatch = function (batch) {
     .flatten()
     .groupBy("email")
     .map(function (responses) {
-      var tokens =  _.reduce(responses, function (memo, response) {
-        memo.push(response.get("token"));
-
-        return memo;
-      }, []);
+      var tokens =  _.map(responses, function (response) {
+        return response.get("token");
+      });
 
       return {
         email: responses[0].email,
