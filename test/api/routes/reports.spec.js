@@ -6,6 +6,7 @@ describe("api/routes/", function () {
 
   var server;
 
+  // Get a surver instance
   before(function (done) {
     getServer(null, function (err, serverRef) {
       if (err) { return done(err); }
@@ -15,10 +16,12 @@ describe("api/routes/", function () {
     });
   });
 
+  // Shut down server
   after(function (done) {
     server.stop(done);
   });
 
+  // Test 'batch'
   var testSurveys = [
     {
       periodStart: moment("20140101", "YYYYMMDD").toISOString(),
@@ -40,7 +43,7 @@ describe("api/routes/", function () {
 
   describe("api/routes/surveys/batch", function () {
 
-    it("POST: should populate records and respond with survey records",
+    it("POST: should respond with survey records in new batch",
       function (done) {
 
       server.inject({
@@ -57,7 +60,6 @@ describe("api/routes/", function () {
       });
     });
 
-    // TODO HERE ADD EXPECTS
     it("GET: should get survey with responses", function (done) {
       server.inject({
         method: "GET",
@@ -66,6 +68,9 @@ describe("api/routes/", function () {
         batch = JSON.parse(res.payload);
         test.done(done, function () {
           expect(res.statusCode).to.equal(200);
+          _.each(batch, function (survey, index) {
+            expect(survey).to.contain(_.omit(testSurveys[index], "emails"));
+          })
         });
       });
     });
@@ -120,7 +125,7 @@ describe("api/routes/", function () {
       });
     });
 
-    it("should POST data and return 200 on valid response", function (done) {
+    it("should POST response data and return new response record", function (done) {
 
       var completedResponse = {
         token: tokens.split("...")[0],
