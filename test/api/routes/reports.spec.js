@@ -27,15 +27,15 @@ describe("api/routes/", function () {
       periodStart: moment("20140101", "YYYYMMDD").toISOString(),
       periodEnd: moment("20140115", "YYYYMMDD").toISOString(),
       projectName: "Foo Project",
-      creatorEmail: "creator@gmail.com",
-      emails: ["hi@gmail.com", "lo@gmail.com"]
+      creatorEmail: "creator@example.com",
+      emails: ["hi@example.com", "lo@example.com"]
     },
     {
       periodStart: moment("20140115", "YYYYMMDD").toISOString(),
       periodEnd: moment("20140130", "YYYYMMDD").toISOString(),
       projectName: "Bar Project",
-      creatorEmail: "creator3@gmail.com",
-      emails: ["hi@gmail.com", "hilo@gmail.com"]
+      creatorEmail: "creator3@example.com",
+      emails: ["hi@example.com", "hilo@example.com"]
     }
   ];
 
@@ -53,7 +53,7 @@ describe("api/routes/", function () {
       }, function (res) {
         var newSurveys = JSON.parse(res.payload);
         test.done(done, function () {
-          _.each(newSurveys, function (survey, i) {
+          _.each(newSurveys.surveys, function (survey, i) {
             expect(survey).to.contain(_.omit(testSurveys[i], "emails"));
           });
         });
@@ -66,9 +66,10 @@ describe("api/routes/", function () {
         url: "/surveys/batch/1"
       }, function (res) {
         batch = JSON.parse(res.payload);
+
         test.done(done, function () {
           expect(res.statusCode).to.equal(200);
-          _.each(batch, function (survey, index) {
+          _.each(batch.surveys, function (survey, index) {
             expect(survey).to.contain(_.omit(testSurveys[index], "emails"));
           });
         });
@@ -77,7 +78,7 @@ describe("api/routes/", function () {
   });
 
   describe("api/routes/responses", function () {
-    // Tokens for hi@gmail.com
+    // Tokens for hi@example.com
     var tokens;
 
     // create `...` joined list of tokens to fetch from server
@@ -88,7 +89,7 @@ describe("api/routes/", function () {
         })
         .flatten()
         .filter(function (response) {
-          return response.email === "hi@gmail.com";
+          return response.email === "hi@example.com";
         })
         .map(function (response) {
           return response.token;

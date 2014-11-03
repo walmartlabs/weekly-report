@@ -56,7 +56,7 @@ module.exports = function (server) {
     }
   });
 
-  // Get views of reponses to be filled out
+  // Get views of responses to be filled out
   // based on a list of tokens
   server.route({
     method: "GET",

@@ -37,7 +37,7 @@ var handleWriteErr = function (req, res) {
   };
 };
 
-
+// Creates a survey record and then creates all response records
 var createSurvey = function (surveyData, models) {
   return when.promise(function (resolve, reject) {
     var surveyRecord;
@@ -54,6 +54,7 @@ var createSurvey = function (surveyData, models) {
             SurveyId: surveyRecord.id
           };
         });
+
         return models.Response.bulkCreate(responses);
       })
       // Finally respond to client with new survey record
@@ -64,7 +65,33 @@ var createSurvey = function (surveyData, models) {
   });
 };
 
+// From array of survey records with nested response records
+// will return array of objects, one for each email address
+// containing the tokens for that address
+var tokenByEmailFromBatch = function (batch) {
+  return _.chain(batch)
+    .map(function (survey) {
+      return survey.Responses;
+    })
+    .flatten()
+    .groupBy("email")
+    .map(function (responses) {
+      var tokens =  _.reduce(responses, function (memo, response) {
+        memo.push(response.get("token"));
+
+        return memo;
+      }, []);
+
+      return {
+        email: responses[0].email,
+        tokens: tokens
+      };
+    })
+    .value();
+};
+
 module.exports = {
+  createSurvey: createSurvey,
   handleWriteErr: handleWriteErr,
-  createSurvey: createSurvey
+  tokenByEmailFromBatch: tokenByEmailFromBatch
 };
