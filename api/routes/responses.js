@@ -8,7 +8,6 @@ var path = require("path");
 
 var _ = require("lodash");
 var jade = require("jade");
-var when = require("when");
 
 var utils = require("../lib/utils");
 

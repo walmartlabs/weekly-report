@@ -70,7 +70,7 @@ describe("api/routes/", function () {
           expect(res.statusCode).to.equal(200);
           _.each(batch, function (survey, index) {
             expect(survey).to.contain(_.omit(testSurveys[index], "emails"));
-          })
+          });
         });
       });
     });
@@ -125,7 +125,8 @@ describe("api/routes/", function () {
       });
     });
 
-    it("should POST response data and return new response record", function (done) {
+    it("should POST response data and return new response record",
+      function (done) {
 
       var completedResponse = {
         token: tokens.split("...")[0],
