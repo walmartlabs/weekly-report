@@ -37,22 +37,6 @@ var handleWriteErr = function (req, res) {
   };
 };
 
-// Returns promise to lookup and dad survey for given response
-var attachSurvey = function (response) {
-  return when.promise(function (resolve, reject) {
-
-    // Get associated survey
-    response.getSurvey()
-      .then(function (survey) {
-        // Attach to response
-        resolve(_.extend(response, {
-          survey: survey
-        }));
-      }, function (err) {
-        reject(err);
-      });
-  });
-};
 
 var createSurvey = function (surveyData, models) {
   return when.promise(function (resolve, reject) {
@@ -82,6 +66,5 @@ var createSurvey = function (surveyData, models) {
 
 module.exports = {
   handleWriteErr: handleWriteErr,
-  attachSurvey: attachSurvey,
   createSurvey: createSurvey
 };
