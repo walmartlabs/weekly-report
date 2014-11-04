@@ -50,7 +50,8 @@ var createSurvey = function (surveyData, models) {
         var responses = _.map(surveyData.emails, function (email) {
           return {
             token: chance.hash({ length: 15 }),
-            email: email,
+            email: email.email,
+            name: email.name,
             SurveyId: surveyRecord.id
           };
         });
@@ -59,9 +60,11 @@ var createSurvey = function (surveyData, models) {
       })
       // Finally respond to client with new survey record
       .then(function () {
-        resolve(surveyRecord);
+        resolve(surveyRecord.SurveyBatchId);
       })
-      .catch(reject);
+      .catch(function (err) {
+        reject(err);
+      });
   });
 };
 

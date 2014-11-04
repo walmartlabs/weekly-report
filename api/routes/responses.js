@@ -77,7 +77,7 @@ module.exports = function (server) {
 
         // Prepare view data
         var data = {
-          name: responses[0].get("email"),
+          name: responses[0].get("name"),
           responses: _.map(responses, function (response) {
             return {
               completed: !!response.get("completedAt"),

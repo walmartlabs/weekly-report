@@ -24,14 +24,11 @@ module.exports = function (server) {
         // Then create the survey records
         // and response records
         .then(function (batch) {
-          var makeSurveys = when.all(_.map(surveys, function (survey) {
+          return when.all(_.map(surveys, function (survey) {
             return utils.createSurvey(_.extend(survey, {
               SurveyBatchId: batch.id
             }), models);
           }));
-
-          // Return batch ID so records can be fetched with responses attached
-          return when(batch.id).then(makeSurveys);
         })
 
         // Fetch all newly created surveys joined to new responses
