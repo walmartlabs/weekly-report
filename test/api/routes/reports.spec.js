@@ -83,19 +83,7 @@ describe("api/routes/", function () {
 
     // create `...` joined list of tokens to fetch from server
     before(function () {
-      tokens = _.chain(batch)
-        .map(function (survey) {
-          return survey.Responses;
-        })
-        .flatten()
-        .filter(function (response) {
-          return response.email === "hi@example.com";
-        })
-        .map(function (response) {
-          return response.token;
-        })
-        .value()
-        .join("...");
+      tokens = batch.tokensByEmail[0].tokens.join("...");
     });
 
     it("should GET response view if valid tokens", function (done) {

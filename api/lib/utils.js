@@ -88,7 +88,33 @@ var tokenByEmailFromBatch = function (batch) {
     .value();
 };
 
+var batchResponse = function (batchId, models) {
+  return when.promise(function (resolve, reject) {
+    // Fetch all newly created surveys joined to new responses
+    models.Survey.findAll({
+      where: {
+        SurveyBatchId: batchId
+      },
+      include: [models.Response]
+    })
+    // Respond with object containing
+    // Array of newly created surveys
+    // And array of email addresses and tokens to create links to responses
+    .then(function (batch) {
+      resolve({
+        surveys: _.map(batch, function (survey) {
+          return survey.dataValues;
+        }),
+        tokensByEmail: tokenByEmailFromBatch(batch)
+      });
+    })
+    .catch(reject);
+
+  });
+};
+
 module.exports = {
+  batchResponse: batchResponse,
   createSurvey: createSurvey,
   handleWriteErr: handleWriteErr,
   tokenByEmailFromBatch: tokenByEmailFromBatch

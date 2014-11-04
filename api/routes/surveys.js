@@ -33,25 +33,14 @@ module.exports = function (server) {
           // Return batch ID so records can be fetched with responses attached
           return when(batch.id).then(makeSurveys);
         })
+
         // Fetch all newly created surveys joined to new responses
+        // and create resonse object
         .then(function (batchId) {
-          return models.Survey.findAll({
-            where: {
-              SurveyBatchId: batchId
-            },
-            include: [models.Response]
-          });
+          return utils.batchResponse(batchId, models);
         })
-        // Respond with object containing
-        // Array of newly created surveys
-        // And array of email addresses and tokens to create links to responses
-        .then(function (batch) {
-          res({
-            surveys: _.map(batch, function (survey) {
-              return survey.dataValues;
-            }),
-            tokensByEmail: utils.tokenByEmailFromBatch(batch)
-          });
+        .then(function (responseBody) {
+          res(responseBody);
         })
         .catch(utils.handleWriteErr(req, res));
     }
@@ -64,23 +53,12 @@ module.exports = function (server) {
     handler: function (req, res) {
       var models = req.server.plugins.sqlModels.models;
 
-      models.Survey.findAll({
-        where: {
-          SurveyBatchId: req.params.number
-        },
-        include: [models.Response]
-      })
-     .then(function (surveys) {
-        // Convert survey.responses to arrapy of dataValues
-        _.each(surveys, function (survey) {
+      utils.batchResponse(req.params.number, models)
+        .then(function (responseBody) {
 
-          survey.responses = _.map(survey.responses, function (response) {
-            return response.dataValues;
-          });
-        });
-        res(surveys);
-      })
-      .catch(utils.handleWriteErr(req, res));
+          res(responseBody);
+        })
+        .catch(utils.handleWriteErr(req, res));
     }
   });
 };
