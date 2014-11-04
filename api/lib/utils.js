@@ -85,6 +85,7 @@ var tokenByEmailFromBatch = function (batch) {
 
       return {
         email: responses[0].email,
+        name: repsonses[0].name,
         tokens: tokens
       };
     })
