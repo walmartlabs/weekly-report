@@ -47,6 +47,7 @@ var createSurvey = function (surveyData, models) {
       // Add record for each email address
       .then(function (newRecord) {
         surveyRecord = newRecord;
+
         var responses = _.map(surveyData.emails, function (email) {
           return {
             token: chance.hash({ length: 15 }),
@@ -109,7 +110,8 @@ var batchResponse = function (batchId, models) {
         surveys: _.map(batch, function (survey) {
           return survey.dataValues;
         }),
-        tokensByEmail: tokenByEmailFromBatch(batch)
+        tokensByEmail: tokenByEmailFromBatch(batch),
+        batchId: batchId
       });
     })
     .catch(reject);

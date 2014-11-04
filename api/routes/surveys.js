@@ -18,22 +18,25 @@ module.exports = function (server) {
       // TODO[6]: Verify data
       var surveys = req.payload;
       var models = req.server.plugins.sqlModels.models;
+      var batchId;
 
       // First create a batch number
       models.SurveyBatch.create()
         // Then create the survey records
         // and response records
         .then(function (batch) {
+          batchId = batch.get("id");
+
           return when.all(_.map(surveys, function (survey) {
             return utils.createSurvey(_.extend(survey, {
-              SurveyBatchId: batch.id
+              SurveyBatchId: batchId
             }), models);
           }));
         })
 
         // Fetch all newly created surveys joined to new responses
         // and create resonse object
-        .then(function (batchId) {
+        .then(function () {
           return utils.batchResponse(batchId, models);
         })
         .then(function (responseBody) {
