@@ -3,6 +3,49 @@
 // forms, inputs, textareas
 // ------------------------------------
 
+// Default form
+form {
+  margin-bottom: $defaultWhitespace;
+  padding: $defaultWhitespace ($defaultWhitespace*2);
+
+  background-color: $formBgColor;
+  border: 3px solid $bgDarkColor;
+}
+
+.form-body {
+  margin-top: $defaultWhitespace;
+  display: none;
+  &.is-expanded {
+    display: block;
+  }
+}
+
+.form-header {
+  .headingD {
+    color: $textColor;
+    &:hover {
+      cursor: pointer;
+      color: $concreteColor;
+    }
+  }
+
+  .headingD.is-done {
+    position: relative;
+
+    color: $greenColor;
+
+    &:before {
+      @include icon-success();
+      font-size: inherit;
+      top: 0;
+    }
+    &:hover {
+      cursor: default;
+    }
+  }
+}
+
+
 // DEFAULT INPUT
 .input, .textarea {
   width: 100%;
