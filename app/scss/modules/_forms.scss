@@ -34,7 +34,7 @@ form {
 
     color: $greenColor;
 
-    &:before {
+    &:after {
       @include icon-success();
       font-size: inherit;
       top: 0;
