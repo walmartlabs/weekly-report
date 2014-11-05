@@ -1,8 +1,8 @@
 form.form(id=response.token, onkeypress="return event.keyCode != 13;")
   div.form-header
-    .headingB #{response.projectName}
+    .headingD.noMargin(class=response.completed ? "is-done" : "") #{response.projectName}
       //- Display done if completed
-      .headingB.status(class=response.completed ? "is-done" : "") DONE
+      .headingD.status(class=response.completed ? "is-done" : "")
   //- Only populate form body if not completed
   if !response.completed
     div.form-body
