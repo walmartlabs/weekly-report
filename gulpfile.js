@@ -63,7 +63,7 @@ var runCss = function () {
 gulp.task("css", runCss);
 
 gulp.task("css-livereload", function () {
-  runCss.pipe(livereload());
+  return runCss().pipe(livereload());
 });
 
 gulp.task("clean", function () {
