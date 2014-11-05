@@ -18,40 +18,29 @@ module.exports = function (server) {
       // TODO[6]: Verify data
       var surveys = req.payload;
       var models = req.server.plugins.sqlModels.models;
+      var batchId;
 
       // First create a batch number
       models.SurveyBatch.create()
         // Then create the survey records
         // and response records
         .then(function (batch) {
-          var makeSurveys = when.all(_.map(surveys, function (survey) {
+          batchId = batch.get("id");
+
+          return when.all(_.map(surveys, function (survey) {
             return utils.createSurvey(_.extend(survey, {
-              SurveyBatchId: batch.id
+              SurveyBatchId: batchId
             }), models);
           }));
+        })
 
-          // Return batch ID so records can be fetched with responses attached
-          return when(batch.id).then(makeSurveys);
-        })
         // Fetch all newly created surveys joined to new responses
-        .then(function (batchId) {
-          return models.Survey.findAll({
-            where: {
-              SurveyBatchId: batchId
-            },
-            include: [models.Response]
-          });
+        // and create resonse object
+        .then(function () {
+          return utils.batchResponse(batchId, models);
         })
-        // Respond with object containing
-        // Array of newly created surveys
-        // And array of email addresses and tokens to create links to responses
-        .then(function (batch) {
-          res({
-            surveys: _.map(batch, function (survey) {
-              return survey.dataValues;
-            }),
-            tokensByEmail: utils.tokenByEmailFromBatch(batch)
-          });
+        .then(function (responseBody) {
+          res(responseBody);
         })
         .catch(utils.handleWriteErr(req, res));
     }
@@ -64,23 +53,12 @@ module.exports = function (server) {
     handler: function (req, res) {
       var models = req.server.plugins.sqlModels.models;
 
-      models.Survey.findAll({
-        where: {
-          SurveyBatchId: req.params.number
-        },
-        include: [models.Response]
-      })
-     .then(function (surveys) {
-        // Convert survey.responses to arrapy of dataValues
-        _.each(surveys, function (survey) {
+      utils.batchResponse(req.params.number, models)
+        .then(function (responseBody) {
 
-          survey.responses = _.map(survey.responses, function (response) {
-            return response.dataValues;
-          });
-        });
-        res(surveys);
-      })
-      .catch(utils.handleWriteErr(req, res));
+          res(responseBody);
+        })
+        .catch(utils.handleWriteErr(req, res));
     }
   });
 };

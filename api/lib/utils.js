@@ -47,10 +47,12 @@ var createSurvey = function (surveyData, models) {
       // Add record for each email address
       .then(function (newRecord) {
         surveyRecord = newRecord;
+
         var responses = _.map(surveyData.emails, function (email) {
           return {
             token: chance.hash({ length: 15 }),
-            email: email,
+            email: email.email,
+            name: email.name,
             SurveyId: surveyRecord.id
           };
         });
@@ -59,9 +61,11 @@ var createSurvey = function (surveyData, models) {
       })
       // Finally respond to client with new survey record
       .then(function () {
-        resolve(surveyRecord);
+        resolve(surveyRecord.SurveyBatchId);
       })
-      .catch(reject);
+      .catch(function (err) {
+        reject(err);
+      });
   });
 };
 
@@ -82,13 +86,41 @@ var tokenByEmailFromBatch = function (batch) {
 
       return {
         email: responses[0].email,
+        name: responses[0].name,
         tokens: tokens
       };
     })
     .value();
 };
 
+var batchResponse = function (batchId, models) {
+  return when.promise(function (resolve, reject) {
+    // Fetch all newly created surveys joined to new responses
+    models.Survey.findAll({
+      where: {
+        SurveyBatchId: batchId
+      },
+      include: [models.Response]
+    })
+    // Respond with object containing
+    // Array of newly created surveys
+    // And array of email addresses and tokens to create links to responses
+    .then(function (batch) {
+      resolve({
+        surveys: _.map(batch, function (survey) {
+          return survey.dataValues;
+        }),
+        tokensByEmail: tokenByEmailFromBatch(batch),
+        batchId: batchId
+      });
+    })
+    .catch(reject);
+
+  });
+};
+
 module.exports = {
+  batchResponse: batchResponse,
   createSurvey: createSurvey,
   handleWriteErr: handleWriteErr,
   tokenByEmailFromBatch: tokenByEmailFromBatch

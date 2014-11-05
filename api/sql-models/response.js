@@ -16,6 +16,10 @@ module.exports = function (sqlize, DataTypes) {
       allowNull: false,
       unique: true
     },
+    name: {
+      type: DataTypes.STRING(SHORT_CHARS),
+      allowNull: false
+    },
     email: {
       type: DataTypes.STRING(SHORT_CHARS),
       allowNull: false,
