@@ -32,7 +32,8 @@ liveServer(null, function (err, server) {
       method: "POST",
       url: "/responses",
       payload: {
-        token: link.split("...")[0]
+        token: link.split("...")[0],
+        accomplishments: ["blah"]
       }
     }, function (res) {
       if (res.statusCode !== 200) {
