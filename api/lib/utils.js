@@ -129,15 +129,17 @@ var batchResponse = function (batchId, models) {
  * and that each array entry has letter(s). If not then throws. Otherwise
  * returns true.
  *
- * @param  {JSON string[]} value  The entries
- * @throws                        If criteria not met
- * @return {boolean}              True if criteria met
+ * @param  {object}         options
+ *         {JSON string[]}  options.value       The entries
+ *         {boolean}        options.allowEmpty  Set to true to allow empty array
+ * @throws                                      If criteria not met
+ * @return {boolean}                            True if criteria met
  */
-var validArrayJSON = function (value) {
+var validArrayJSON = function (options) {
   var arr;
 
   try {
-    arr = JSON.parse(value);
+    arr = JSON.parse(options.value);
   } catch (e) {
     throw new Error("Can not parse JSON");
   }
@@ -146,8 +148,13 @@ var validArrayJSON = function (value) {
     throw new Error("Field must be an array");
   }
 
-  if (arr.length === 0) {
+  if (arr.length === 0 && options.allowEmpty !== true) {
     throw new Error("Array of responses is empty");
+  }
+
+  // If allowEmpty then don't need to check entries
+  if (arr.length === 0 && options.allowEmpty) {
+    return true;
   }
 
   // Make sure each array entry has letter(s)

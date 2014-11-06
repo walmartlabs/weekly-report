@@ -41,7 +41,10 @@ module.exports = function (sqlize, DataTypes) {
         requiredWithAnswer: function (value) {
           // Only if trying to post an answer
           if (this.completedAt) {
-            validArrayJSON(value);
+            validArrayJSON({
+              value: value,
+              allowEmpty: false
+            });
           }
         }
       }
@@ -49,7 +52,12 @@ module.exports = function (sqlize, DataTypes) {
     blockers: {
       type: DataTypes.TEXT,
       validate: {
-        validArrayJSON: validArrayJSON
+        validArrayJSON: function (value) {
+          validArrayJSON({
+            value: value,
+            allowEmpty: true
+          });
+        }
       }
     },
     privateFeedback: {

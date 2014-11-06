@@ -8,7 +8,22 @@ describe("api/lib/utils validArrayJSON", function () {
   it("Should return true if valid array with letters in each entry",
     function (done) {
 
-    var valid = JSON.stringify(["one", "two"]);
+    var valid = {
+      value: JSON.stringify(["one", "two"])
+    };
+
+    test.done(done, function () {
+      expect(fn(valid)).to.be.true;
+    });
+  });
+
+  it("Should return true if empty array and allowEmpty: true",
+    function (done) {
+
+    var valid = {
+      value: JSON.stringify([]),
+      allowEmpty: true
+    };
 
     test.done(done, function () {
       expect(fn(valid)).to.be.true;
@@ -18,7 +33,10 @@ describe("api/lib/utils validArrayJSON", function () {
   it("Should throw if valid array but entry without letter(s)",
     function (done) {
 
-    var invalid = JSON.stringify(["one", "  "]);
+    var invalid = {
+      value: JSON.stringify(["one", "  "])
+    };
+
     var err;
     var result;
 
@@ -37,7 +55,10 @@ describe("api/lib/utils validArrayJSON", function () {
   it("Should throw if valid array but entry not a string",
     function (done) {
 
-    var invalid = JSON.stringify(["one", 15]);
+    var invalid = {
+      value: JSON.stringify(["one", 15])
+    };
+
     var err;
     var result;
 
@@ -56,7 +77,9 @@ describe("api/lib/utils validArrayJSON", function () {
   it("Should throw if valid array but not entries",
     function (done) {
 
-    var invalid = JSON.stringify([]);
+    var invalid = {
+      value: JSON.stringify([])
+    };
     var err;
     var result;
 
@@ -75,7 +98,9 @@ describe("api/lib/utils validArrayJSON", function () {
   it("Should throw if not an array",
     function (done) {
 
-    var invalid = JSON.stringify({ foo: "bar" });
+    var invalid = {
+      value: JSON.stringify({ foo: "bar" })
+    };
     var err;
     var result;
 
