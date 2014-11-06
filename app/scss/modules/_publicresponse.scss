@@ -1,32 +1,5 @@
 // Report
 
-form {
-  border-radius: 7px;
-  background-color: white;
-  padding: 10px;
-}
-
-.form-body {
-  padding: 15px;
-  display: none;
-  &.is-expanded {
-    display: block;
-  }
-}
-
-.form-header {
-  padding: 5px;
-  border-bottom: 1px solid $defaultBorderColor;
-
-  &:hover {
-    cursor: pointer;
-  }
-
-  .headingB {
-    margin-bottom: 0px;
-  }
-}
-
 .status {
   float: right;
   display: none;
@@ -47,9 +20,14 @@ form {
 
 
 .report-container {
-  width: 724px;
+  width: 100%;
   margin: 0 auto;
   padding: 50px 22px;
+
+  @media (min-width: $largeScreen) {
+    width: 90%;
+    max-width: $maxWidth;
+  }
 }
 
 .report-message {

@@ -19,11 +19,10 @@
 
   outline: none;
   text-shadow: none;
-  border: 2px solid $greenColor;
 
   &:hover {
     cursor: pointer;
-    border: 2px solid $redColor;
+    background-color: $greenDarkColor;
   }
 }
 
@@ -32,4 +31,3 @@
   margin-left: -0.2em;
   margin-right: 0.5em;
 }
-
