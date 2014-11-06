@@ -40,6 +40,10 @@ module.exports = function (sqlize, DataTypes) {
     },
     privateFeedback: {
       type: DataTypes.TEXT
+    },
+    SurveyId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   });
 

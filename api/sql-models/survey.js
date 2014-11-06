@@ -26,6 +26,10 @@ module.exports = function (sqlize, DataTypes) {
     projectName: {
       type: DataTypes.STRING(SHORT_CHARS),
       allowNull: false
+    },
+    SurveyBatchId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   });
 
