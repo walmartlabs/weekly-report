@@ -15,6 +15,8 @@ describe("api/sql-models", function () {
 
       server = serverRef;
       server.start(done);
+
+
     });
   });
 
@@ -23,16 +25,40 @@ describe("api/sql-models", function () {
     server.stop(done);
   });
 
-  it("Should err when creating survey record without foreign key BatchId",
-    function (done) {
+  describe("foreign key constraints", function () {
+    var data;
+    var err;
 
-    var models = server.plugins.sqlModels.models;
 
-    models.Survey.create(_.omit(testSurveys[0], "emails"))
-      .done(function (err) {
+    // Write survey without BatchId
+    before(function (done) {
+      var models = server.plugins.sqlModels.models;
+
+      models.Survey.create(_.omit(testSurveys[0], "emails", "BatchId"))
+        .done(function (error, theData) {
+          err = error;
+          data = theData;
+          done();
+        });
+    });
+
+    if (process.env.DATABASE_DIALECT === "mysql") {
+      it("MySQL should err if write survey record without foreign key BatchId",
+        function (done) {
+
         test.done(done, function () {
           expect(err).to.be.an("object");
         });
       });
+    } else {
+      it("sqlite should not err if write survey record without " +
+        "foreign key BatchId",
+        function (done) {
+
+        test.done(done, function () {
+          expect(err).to.be.null;
+        });
+      });
+    }
   });
 });
