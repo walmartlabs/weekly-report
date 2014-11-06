@@ -21,9 +21,17 @@ module.exports = function (sqlize, DataTypes) {
     },
     creatorEmail: {
       type: DataTypes.STRING(SHORT_CHARS),
-      allowNull: false
+      allowNull: false,
+      validate: {
+        isEmail: true
+      }
     },
     projectName: {
+      type: DataTypes.STRING(SHORT_CHARS),
+      allowNull: false
+    },
+    // A user defined project identifier
+    projectId: {
       type: DataTypes.STRING(SHORT_CHARS),
       allowNull: false
     },

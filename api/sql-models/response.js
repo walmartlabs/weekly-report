@@ -5,6 +5,7 @@
  * @exports {function}  To add models to instance
  */
 // id, createdAt, updatedAt added automatically
+var validArrayJSON = require("../lib/utils").validArrayJSON;
 
 var SHORT_CHARS = 255;
 
@@ -23,7 +24,9 @@ module.exports = function (sqlize, DataTypes) {
     email: {
       type: DataTypes.STRING(SHORT_CHARS),
       allowNull: false,
-      isEmail: true
+      validate: {
+        isEmail: true
+      }
     },
     completedAt: {
       type: DataTypes.DATE
@@ -31,12 +34,23 @@ module.exports = function (sqlize, DataTypes) {
     moralePicker: {
       type: DataTypes.TEXT
     },
-    // TODO[7]: Enforce JSON array for accomplishments
     accomplishments: {
-      type: DataTypes.TEXT
+      type: DataTypes.TEXT,
+      validate: {
+        // Custom validator
+        requiredWithAnswer: function (value) {
+          // Only if trying to post an answer
+          if (this.completedAt) {
+            validArrayJSON(value);
+          }
+        }
+      }
     },
     blockers: {
-      type: DataTypes.TEXT
+      type: DataTypes.TEXT,
+      validate: {
+        validArrayJSON: validArrayJSON
+      }
     },
     privateFeedback: {
       type: DataTypes.TEXT
