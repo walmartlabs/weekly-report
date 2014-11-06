@@ -1,10 +1,9 @@
-var _ = require("lodash");
 var utils = require("../../../api/lib/utils");
 
 
 describe("api/lib/utils validArrayJSON", function () {
 
-  fn = utils.validArrayJSON;
+  var fn = utils.validArrayJSON;
 
   it("Should return true if valid array with letters in each entry",
     function (done) {
