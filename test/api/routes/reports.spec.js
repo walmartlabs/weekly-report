@@ -160,5 +160,28 @@ describe("api/routes/", function () {
         });
       });
     });
+
+    it("POST without accomplishments should 400",
+      function (done) {
+
+      var completedResponse = {
+        token: tokens.split("...")[0],
+        accomplishments: [" "],
+        blockers: [
+          "four",
+          "five"
+        ]
+      };
+
+      server.inject({
+        method: "POST",
+        url: "/responses",
+        payload: completedResponse
+      }, function (res) {
+        test.done(done, function () {
+          expect(res.statusCode).to.equal(400);
+        });
+      });
+    });
   });
 });

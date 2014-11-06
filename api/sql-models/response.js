@@ -32,26 +32,28 @@ module.exports = function (sqlize, DataTypes) {
       type: DataTypes.DATE
     },
     moralePicker: {
-      type: DataTypes.TEXT
+      type: DataTypes.TEXT,
+      validate: {
+        notEmpty: true
+      }
     },
     accomplishments: {
       type: DataTypes.TEXT,
       validate: {
+        notEmpty: true,
         // Custom validator
         requiredWithAnswer: function (value) {
-          // Only if trying to post an answer
-          if (this.completedAt) {
-            validArrayJSON({
-              value: value,
-              allowEmpty: false
-            });
-          }
+          validArrayJSON({
+            value: value,
+            allowEmpty: false
+          });
         }
       }
     },
     blockers: {
       type: DataTypes.TEXT,
       validate: {
+        notEmpty: true,
         validArrayJSON: function (value) {
           validArrayJSON({
             value: value,
@@ -61,11 +63,24 @@ module.exports = function (sqlize, DataTypes) {
       }
     },
     privateFeedback: {
-      type: DataTypes.TEXT
+      type: DataTypes.TEXT,
+      validate: {
+        notEmpty: true
+      }
     },
     SurveyId: {
       type: DataTypes.INTEGER,
       allowNull: false
+    }
+  }, {
+    // Model level validations
+    validate: {
+      // To post a response must have accomplishments
+      requiredWithResponse: function () {
+        if (this.completedAt && !this.accomplishments) {
+          throw new Error("Accomplishments required");
+        }
+      }
     }
   });
 

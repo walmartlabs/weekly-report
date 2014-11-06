@@ -40,8 +40,6 @@ $(function () {
   // Handle form submits
   $("form").submit(function (event) {
     var self = $(this);
-    // TODO[8]: Are there required fields?
-
     var data = $(this).serializeArray();
 
     $.post("/responses", data)
