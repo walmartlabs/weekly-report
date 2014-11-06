@@ -14,7 +14,6 @@ var surveyRoutes = require("./routes/surveys");
 var responseRoutes = require("./routes/responses");
 
 var getServer = function (options, callback) {
-  // TODO[5]: Recluster
   var server = Hapi.createServer("localhost", process.env.PORT || 8000);
 
   // Add routes to server

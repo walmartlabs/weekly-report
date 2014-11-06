@@ -1,6 +1,8 @@
 var _ = require("lodash");
-var moment = require("moment");
 var getServer = require("../../../api/server");
+
+// A batch of surveys to mock with
+var testSurveys = require("../survey-data");
 
 describe("api/routes/", function () {
 
@@ -20,42 +22,6 @@ describe("api/routes/", function () {
   after(function (done) {
     server.stop(done);
   });
-
-  // Test 'batch'
-  var testSurveys = [
-    {
-      periodStart: moment("20140101", "YYYYMMDD").toISOString(),
-      periodEnd: moment("20140115", "YYYYMMDD").toISOString(),
-      projectName: "Foo Project",
-      creatorEmail: "creator@example.com",
-      emails: [
-        {
-          email: "hi@example.com",
-          name: "ExampleHi"
-        },
-        {
-          email: "lo@example.com",
-          name: "ExampleLo"
-        }
-      ]
-    },
-    {
-      periodStart: moment("20140115", "YYYYMMDD").toISOString(),
-      periodEnd: moment("20140130", "YYYYMMDD").toISOString(),
-      projectName: "Bar Project",
-      creatorEmail: "creator3@example.com",
-      emails: [
-        {
-          email: "hi@example.com",
-          name: "ExampleHi"
-        },
-        {
-          email: "hilo@example.com",
-          name: "ExampleHiLo"
-        }
-      ]
-    }
-  ];
 
   var batch;
 
