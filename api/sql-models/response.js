@@ -5,6 +5,7 @@
  * @exports {function}  To add models to instance
  */
 // id, createdAt, updatedAt added automatically
+var validArrayJSON = require("../lib/utils").validArrayJSON;
 
 var SHORT_CHARS = 255;
 
@@ -23,23 +24,63 @@ module.exports = function (sqlize, DataTypes) {
     email: {
       type: DataTypes.STRING(SHORT_CHARS),
       allowNull: false,
-      isEmail: true
+      validate: {
+        isEmail: true
+      }
     },
     completedAt: {
       type: DataTypes.DATE
     },
     moralePicker: {
-      type: DataTypes.TEXT
+      type: DataTypes.TEXT,
+      validate: {
+        notEmpty: true
+      }
     },
-    // TODO[7]: Enforce JSON array for accomplishments
     accomplishments: {
-      type: DataTypes.TEXT
+      type: DataTypes.TEXT,
+      validate: {
+        notEmpty: true,
+        // Custom validator
+        requiredWithAnswer: function (value) {
+          validArrayJSON({
+            value: value,
+            allowEmpty: false
+          });
+        }
+      }
     },
     blockers: {
-      type: DataTypes.TEXT
+      type: DataTypes.TEXT,
+      validate: {
+        notEmpty: true,
+        validArrayJSON: function (value) {
+          validArrayJSON({
+            value: value,
+            allowEmpty: true
+          });
+        }
+      }
     },
     privateFeedback: {
-      type: DataTypes.TEXT
+      type: DataTypes.TEXT,
+      validate: {
+        notEmpty: true
+      }
+    },
+    SurveyId: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    }
+  }, {
+    // Model level validations
+    validate: {
+      // To post a response must have accomplishments
+      requiredWithResponse: function () {
+        if (this.completedAt && !this.accomplishments) {
+          throw new Error("Accomplishments required");
+        }
+      }
     }
   });
 

@@ -10,7 +10,7 @@ form.form(id=response.token, onkeypress="return event.keyCode != 13;")
        value=response.token)
       section
         legend
-          h2.headingB What were your key accomplishments this week?
+          h2.headingB What were your key accomplishments this week? (required)
             br
             span.headingB-subheading (Try to limit to 3&ndash;6 items)
         ul.updating-list
@@ -45,4 +45,4 @@ form.form(id=response.token, onkeypress="return event.keyCode != 13;")
             textarea.textarea(name="privateFeedback", form=response.token)
       div.form-footer
         input.btn(type="submit", value="Send Report")
-        p.submit-error Error sending form.
+        p.submit-error Couldn't submit. Make sure required fields are filled out and try again.

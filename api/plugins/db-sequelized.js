@@ -17,9 +17,16 @@ var register = function (plugin, options, next) {
   var SurveyBatch = surveyBatchSchema(sqlize, Sqlize);
   var Response = responseSchema(sqlize, Sqlize);
 
+  var foreignKey = {
+    onDelete: "restrict",
+    onUpdate: "restrict"
+  };
+
   // Relationships
-  SurveyBatch.hasMany(Survey);
-  Survey.hasMany(Response);
+  SurveyBatch.hasMany(Survey, foreignKey);
+  Survey.belongsTo(SurveyBatch);
+
+  Survey.hasMany(Response, foreignKey);
   Response.belongsTo(Survey);
 
   // Expose sqlize objects to the application

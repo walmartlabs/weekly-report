@@ -21,6 +21,11 @@ var when = require("when");
 // Log error and exit process
 var handleWriteErr = function (req, res) {
   return function (err) {
+    // If validation err respond and don't end process
+    if (err.message = "SequelizeValidationError") {
+      return res(err.errors).code(400);
+    }
+
     try {
       req.server.log("error", {
         stack: err.stack,
@@ -119,9 +124,53 @@ var batchResponse = function (batchId, models) {
   });
 };
 
+/**
+ * Checks if value can be parsed as JSON, that is an array,
+ * and that each array entry has letter(s). If not then throws. Otherwise
+ * returns true.
+ *
+ * @param  {object}         options
+ *         {JSON string[]}  options.value       The entries
+ *         {boolean}        options.allowEmpty  Set to true to allow empty array
+ * @throws                                      If criteria not met
+ * @return {boolean}                            True if criteria met
+ */
+var validArrayJSON = function (options) {
+  var arr;
+
+  try {
+    arr = JSON.parse(options.value);
+  } catch (e) {
+    throw new Error("Can not parse JSON");
+  }
+
+  if (!_.isArray(arr)) {
+    throw new Error("Field must be an array");
+  }
+
+  if (arr.length === 0 && !options.allowEmpty) {
+    throw new Error("Array of responses is empty");
+  }
+
+  // Make sure each array entry has letter(s)
+  _.each(arr, function (entry) {
+    if (!_.isString(entry)) {
+      throw new Error("One ore more entries not a string");
+    }
+
+    if (!entry.match(/[a-z]/i)) {
+      throw new Error("One or more array entries is blank " +
+        "or does not contain letters");
+    }
+  });
+
+  return true;
+};
+
 module.exports = {
   batchResponse: batchResponse,
   createSurvey: createSurvey,
   handleWriteErr: handleWriteErr,
-  tokenByEmailFromBatch: tokenByEmailFromBatch
+  tokenByEmailFromBatch: tokenByEmailFromBatch,
+  validArrayJSON: validArrayJSON
 };

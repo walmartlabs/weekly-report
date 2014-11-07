@@ -17,9 +17,25 @@ module.exports = function (server) {
     method: "POST",
     path: "/responses",
     handler: function (req, res) {
-      // TODO[6]: Validate data
       var models = req.server.plugins.sqlModels.models;
       var data = req.payload;
+
+      data = _.chain(data)
+        // Remove empty entries in arrays
+        .mapValues(function (entry) {
+          if (_.isArray(entry)) {
+            // Keep strings with letter(s)
+            return _.filter(entry, function (item) {
+              return _.isString(item) && item.match(/[a-z]/i);
+            });
+          }
+          return entry;
+        })
+        // Remove empty string entries
+        .omit(function (entry) {
+          return _.isString(entry) && !entry.match(/[a-z]/i);
+        })
+        .value();
 
       // Get response record, populate, save
       models.Response.find({ where: { token: data.token }})

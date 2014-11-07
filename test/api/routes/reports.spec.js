@@ -1,6 +1,8 @@
 var _ = require("lodash");
-var moment = require("moment");
 var getServer = require("../../../api/server");
+
+// A batch of surveys to mock with
+var testSurveys = require("../survey-data");
 
 describe("api/routes/", function () {
 
@@ -21,42 +23,6 @@ describe("api/routes/", function () {
     server.stop(done);
   });
 
-  // Test 'batch'
-  var testSurveys = [
-    {
-      periodStart: moment("20140101", "YYYYMMDD").toISOString(),
-      periodEnd: moment("20140115", "YYYYMMDD").toISOString(),
-      projectName: "Foo Project",
-      creatorEmail: "creator@example.com",
-      emails: [
-        {
-          email: "hi@example.com",
-          name: "ExampleHi"
-        },
-        {
-          email: "lo@example.com",
-          name: "ExampleLo"
-        }
-      ]
-    },
-    {
-      periodStart: moment("20140115", "YYYYMMDD").toISOString(),
-      periodEnd: moment("20140130", "YYYYMMDD").toISOString(),
-      projectName: "Bar Project",
-      creatorEmail: "creator3@example.com",
-      emails: [
-        {
-          email: "hi@example.com",
-          name: "ExampleHi"
-        },
-        {
-          email: "hilo@example.com",
-          name: "ExampleHiLo"
-        }
-      ]
-    }
-  ];
-
   var batch;
 
   describe("api/routes/surveys/batch", function () {
@@ -71,9 +37,43 @@ describe("api/routes/", function () {
       }, function (res) {
         var newSurveys = JSON.parse(res.payload);
         test.done(done, function () {
+          expect(res.statusCode).to.equal(200);
           _.each(newSurveys.surveys, function (survey, i) {
             expect(survey).to.contain(_.omit(testSurveys[i], "emails"));
           });
+        });
+      });
+    });
+
+    it("POST: should 400 if required field missing",
+      function (done) {
+
+      var testMissing = [_.omit(testSurveys, "projectName")];
+
+      server.inject({
+        method: "POST",
+        url: "/surveys/batch",
+        payload: testMissing
+      }, function (res) {
+        test.done(done, function () {
+          expect(res.statusCode).to.equal(400);
+        });
+      });
+    });
+
+    it("POST: should 400 if email field not an email",
+      function (done) {
+
+      var testMissing = [_.omit(testSurveys[0], "creatorEmail")];
+      testMissing[0].creatorEmail = "notanemail";
+
+      server.inject({
+        method: "POST",
+        url: "/surveys/batch",
+        payload: testMissing
+      }, function (res) {
+        test.done(done, function () {
+          expect(res.statusCode).to.equal(400);
         });
       });
     });
@@ -132,7 +132,7 @@ describe("api/routes/", function () {
       });
     });
 
-    it("should POST response data and return new response record",
+    it("POST with valid data should return 200",
       function (done) {
 
       var completedResponse = {
@@ -150,25 +150,37 @@ describe("api/routes/", function () {
         privateFeedback: "something private"
       };
 
-      var completedResponseJSON = _.mapValues(
-        _.omit(completedResponse, "token"), function (item) {
-
-        return JSON.stringify(item);
+      server.inject({
+        method: "POST",
+        url: "/responses",
+        payload: completedResponse
+      }, function (res) {
+        test.done(done, function () {
+          expect(res.statusCode).to.equal(200);
+        });
       });
+    });
+
+    it("POST without accomplishments should 400",
+      function (done) {
+
+      var completedResponse = {
+        token: tokens.split("...")[0],
+        accomplishments: [" "],
+        blockers: [
+          "four",
+          "five"
+        ]
+      };
 
       server.inject({
         method: "POST",
         url: "/responses",
         payload: completedResponse
       }, function (res) {
-        var models = server.plugins.sqlModels.models;
-        models.Response.find({ where: {token: tokens.split("...")[0]}})
-          .then(function (response) {
-            test.done(done, function () {
-              expect(response.dataValues).to.contain(completedResponseJSON);
-              expect(res.statusCode).to.equal(200);
-            });
-          });
+        test.done(done, function () {
+          expect(res.statusCode).to.equal(400);
+        });
       });
     });
   });
