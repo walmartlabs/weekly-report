@@ -45,7 +45,8 @@ $(function () {
     $.post("/responses", data)
       // Remove from DOM and show DONE message
       .done(function () {
-        self.find(".status").addClass("is-done");
+        self.find(".status").addClass("is-done")
+          .parent().addClass("is-done");
         self.find(".form-body").remove();
       })
       // Display error message

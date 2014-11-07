@@ -46,9 +46,16 @@ gulp.task("open-browser", function () {
 });
 
 gulp.task("copy", function () {
-  return gulp.src("./app/assets/**/*")
+  gulp.src("./app/assets/**/*")
     .pipe(gulp.dest("./build/assets"));
+  gulp.src("./node_modules/font-awesome/css/**/*")
+    .pipe(gulp.dest("./build/assets/fonts/css"));
+  gulp.src("./node_modules/font-awesome/fonts/**/*")
+    .pipe(gulp.dest("./build/assets/fonts/fonts"));
+
+  return;
 });
+
 
 var runCss = function () {
   return gulp.src(options.scssPath + "main.scss")
