@@ -26,14 +26,14 @@ module.exports = function (server) {
           if (_.isArray(entry)) {
             // Keep strings with letter(s)
             return _.filter(entry, function (item) {
-              return _.isString(item) && item.match(/[a-z]/i) ? true : false;
+              return _.isString(item) && item.match(/[a-z]/i);
             });
           }
           return entry;
         })
         // Remove empty string entries
         .omit(function (entry) {
-          return _.isString(entry) && !entry.match(/[a-z]/i) ? true : false;
+          return _.isString(entry) && !entry.match(/[a-z]/i);
         })
         .value();
 

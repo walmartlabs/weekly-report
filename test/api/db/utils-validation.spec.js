@@ -6,32 +6,28 @@ describe("api/lib/utils validArrayJSON", function () {
   var fn = utils.validArrayJSON;
 
   it("Should return true if valid array with letters in each entry",
-    function (done) {
+    function () {
 
     var valid = {
       value: JSON.stringify(["one", "two"])
     };
 
-    test.done(done, function () {
-      expect(fn(valid)).to.be.true;
-    });
+    expect(fn(valid)).to.be.true;
   });
 
   it("Should return true if empty array and allowEmpty: true",
-    function (done) {
+    function () {
 
     var valid = {
       value: JSON.stringify([]),
       allowEmpty: true
     };
 
-    test.done(done, function () {
-      expect(fn(valid)).to.be.true;
-    });
+    expect(fn(valid)).to.be.true;
   });
 
   it("Should throw if valid array but entry without letter(s)",
-    function (done) {
+    function () {
 
     var invalid = {
       value: JSON.stringify(["one", "  "])
@@ -45,15 +41,13 @@ describe("api/lib/utils validArrayJSON", function () {
     } catch (e) {
       err = e;
     } finally {
-      test.done(done, function () {
-        expect(result).to.be.undefined;
-        expect(err).to.be.an.instanceof(Error);
-      });
+      expect(result).to.be.undefined;
+      expect(err).to.be.an.instanceof(Error);
     }
   });
 
   it("Should throw if valid array but entry not a string",
-    function (done) {
+    function () {
 
     var invalid = {
       value: JSON.stringify(["one", 15])
@@ -67,15 +61,13 @@ describe("api/lib/utils validArrayJSON", function () {
     } catch (e) {
       err = e;
     } finally {
-      test.done(done, function () {
-        expect(result).to.be.undefined;
-        expect(err).to.be.an.instanceof(Error);
-      });
+      expect(result).to.be.undefined;
+      expect(err).to.be.an.instanceof(Error);
     }
   });
 
   it("Should throw if valid array but not entries",
-    function (done) {
+    function () {
 
     var invalid = {
       value: JSON.stringify([])
@@ -88,15 +80,13 @@ describe("api/lib/utils validArrayJSON", function () {
     } catch (e) {
       err = e;
     } finally {
-      test.done(done, function () {
-        expect(result).to.be.undefined;
-        expect(err).to.be.an.instanceof(Error);
-      });
+      expect(result).to.be.undefined;
+      expect(err).to.be.an.instanceof(Error);
     }
   });
 
   it("Should throw if not an array",
-    function (done) {
+    function () {
 
     var invalid = {
       value: JSON.stringify({ foo: "bar" })
@@ -109,10 +99,8 @@ describe("api/lib/utils validArrayJSON", function () {
     } catch (e) {
       err = e;
     } finally {
-      test.done(done, function () {
-        expect(result).to.be.undefined;
-        expect(err).to.be.an.instanceof(Error);
-      });
+      expect(result).to.be.undefined;
+      expect(err).to.be.an.instanceof(Error);
     }
   });
 

@@ -148,13 +148,8 @@ var validArrayJSON = function (options) {
     throw new Error("Field must be an array");
   }
 
-  if (arr.length === 0 && options.allowEmpty !== true) {
+  if (arr.length === 0 && !options.allowEmpty) {
     throw new Error("Array of responses is empty");
-  }
-
-  // If allowEmpty then don't need to check entries
-  if (arr.length === 0 && options.allowEmpty) {
-    return true;
   }
 
   // Make sure each array entry has letter(s)

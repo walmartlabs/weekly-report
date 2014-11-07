@@ -40,11 +40,10 @@ describe("api/sql-models", function () {
     });
 
     it("should err if write survey record without foreign key BatchId",
-      function (done) {
+      function () {
 
-      test.done(done, function () {
-        expect(err).to.be.an("object");
-      });
+      expect(err).to.be.an("object");
+      expect(err.name).to.equal("SequelizeValidationError");
     });
   });
 });
