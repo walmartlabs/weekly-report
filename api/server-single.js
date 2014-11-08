@@ -1,44 +1,57 @@
-var _ = require("lodash");
+var utils = require("./lib/utils");
+var when = require("when");
 
-var getServer = require("./server.js");
+
+var serverPromise = require("./server.js");
 
 var exitWithError = function (err) {
-  var errData = {
+  var errData = utils.logMeta({
     stack: err.stack,
     errMessage: err.message,
     name: err.name
-  };
+  });
 
-  // TODO[#4] Winston with uncaught exceptions handler
   global.console.log(JSON.stringify(errData, null, 2));
   process.exit(1);
 };
 
-var liveServer = function (options, callback) {
-  if (!_.isFunction(callback)) {
-    exitWithError(new Error("callback not a function"));
-  }
+// Create promise for started server
+// Exit process if fails
+var liveServer = function (options) {
 
-  getServer(options, function (err, server) {
-    if (err) {
-      return callback(err);
-    }
+  return when.promise(function (resolve) {
+    var server;
 
-    server.start(function () {
-      server.log("info", "Server running at: " + server.info.uri);
+    serverPromise(options)
+      .then(function (newServer) {
+        // Save server instance
+        server = newServer;
 
-      callback(null, server);
-    });
+        // Create database tables if do not exist
+        return server.plugins.sqlModels.models.sqlize.sync();
+      })
+        // Start up the server
+      .then(function () {
+        return when.promise(function (resolveStart) {
+          server.start(function () {
+            server.log("info", utils.logMeta({
+              msg: "Server running",
+              uri: server.info.uri
+            }));
+            resolveStart();
+          });
+        });
+      })
+      .catch(exitWithError)
+      .done(function () {
+        resolve(server);
+      });
   });
 };
 
 // Start server if this is executed module
 if (!module.parent) {
-  liveServer(null, function (err) {
-    if (err) {
-      exitWithError(err);
-    }
-  });
+  liveServer().done();
 }
 
 module.exports = liveServer;

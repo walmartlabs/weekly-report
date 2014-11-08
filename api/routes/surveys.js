@@ -42,7 +42,8 @@ module.exports = function (server) {
         .then(function (responseBody) {
           res(responseBody);
         })
-        .catch(utils.handleWriteErr(req, res));
+        .catch(utils.handleWriteErr(req, res))
+        .done();
     }
   });
 
@@ -58,7 +59,8 @@ module.exports = function (server) {
 
           res(responseBody);
         })
-        .catch(utils.handleWriteErr(req, res));
+        .catch(utils.handleWriteErr(req, res))
+        .done();
     }
   });
 };

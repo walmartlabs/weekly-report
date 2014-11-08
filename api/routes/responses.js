@@ -66,7 +66,8 @@ module.exports = function (server) {
           return response.save();
         })
         .then(res)
-        .catch(utils.handleWriteErr(req, res));
+        .catch(utils.handleWriteErr(req, res))
+        .done();
     }
   });
 
@@ -109,7 +110,8 @@ module.exports = function (server) {
 
         res(viewFn(data));
       })
-      .catch(utils.handleWriteErr(req, res));
+      .catch(utils.handleWriteErr(req, res))
+      .done();
     }
   });
 };
