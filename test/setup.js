@@ -12,4 +12,5 @@ global.sinon = require("sinon");
 global.expect = chai.expect;
 global.test = test;
 
+// Set to 'test' which will stop logging
 process.env.NODE_ENV = "test";

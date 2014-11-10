@@ -1,23 +1,28 @@
+var _ = require("lodash");
 var utils = require("./lib/utils");
 var when = require("when");
 
-
-var serverPromise = require("./server.js");
+var serverPromise = require("./server");
+var reporters = require("./logger-config");
 
 var exitWithError = function (err) {
   var errData = utils.logMeta({
     stack: err.stack,
     errMessage: err.message,
-    name: err.name
+    name: err.name,
+    msg: "Uncaught exception"
   });
 
-  global.console.log(JSON.stringify(errData, null, 2));
+  global.console.log(errData);
   process.exit(1);
 };
 
 // Create promise for started server
 // Exit process if fails
 var liveServer = function (options) {
+  options = _.extend({
+    reporters: reporters
+  }, options || {});
 
   return when.promise(function (resolve) {
     var server;

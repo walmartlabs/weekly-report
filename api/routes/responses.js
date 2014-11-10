@@ -10,6 +10,7 @@ var _ = require("lodash");
 var jade = require("jade");
 
 var utils = require("../lib/utils");
+var when = require("when");
 
 module.exports = function (server) {
   // Post result of single survey
@@ -17,57 +18,59 @@ module.exports = function (server) {
     method: "POST",
     path: "/responses",
     handler: function (req, res) {
-      var models = req.server.plugins.sqlModels.models;
-      var data = req.payload;
+      throw new Error("hi");
+    // function (req, res) {
+    //   var models = req.server.plugins.sqlModels.models;
+    //   var data = req.payload;
 
-      data = _.chain(data)
-        // Remove empty entries in arrays
-        .mapValues(function (entry) {
-          if (_.isArray(entry)) {
-            // Keep strings with letter(s)
-            return _.filter(entry, function (item) {
-              return _.isString(item) && item.match(/[a-z]/i);
-            });
-          }
-          return entry;
-        })
-        // Remove empty string entries
-        .omit(function (entry) {
-          return _.isString(entry) && !entry.match(/[a-z]/i);
-        })
-        .value();
+    //   data = _.chain(data)
+    //     // Remove empty entries in arrays
+    //     .mapValues(function (entry) {
+    //       if (_.isArray(entry)) {
+    //         // Keep strings with letter(s)
+    //         return _.filter(entry, function (item) {
+    //           return _.isString(item) && item.match(/[a-z]/i);
+    //         });
+    //       }
+    //       return entry;
+    //     })
+    //     // Remove empty string entries
+    //     .omit(function (entry) {
+    //       return _.isString(entry) && !entry.match(/[a-z]/i);
+    //     })
+    //     .value();
 
-      // Get response record, populate, save
-      models.Response.find({ where: { token: data.token }})
-        .then(function (response) {
-          // No matching records
-          if (!response) {
-            res().code(404);
-          }
+    //   // Get response record, populate, save
+    //   models.Response.find({ where: { token: data.token }})
+    //     .then(function (response) {
+    //       // No matching records
+    //       if (!response) {
+    //         res().code(404);
+    //       }
 
-          // Stringify the new fields
-          var postData = _.chain(data)
-            .pick([
-              "accomplishments",
-              "blockers",
-              "moralePicker",
-              "privateFeedback"
-            ])
-            .mapValues(function (value) {
-              return JSON.stringify(value);
-            })
-            .value();
+    //       // Stringify the new fields
+    //       var postData = _.chain(data)
+    //         .pick([
+    //           "accomplishments",
+    //           "blockers",
+    //           "moralePicker",
+    //           "privateFeedback"
+    //         ])
+    //         .mapValues(function (value) {
+    //           return JSON.stringify(value);
+    //         })
+    //         .value();
 
-          // Add fields to be saved
-          _.extend(response.dataValues, postData, {
-            completedAt: new Date()
-          });
+    //       // Add fields to be saved
+    //       _.extend(response.dataValues, postData, {
+    //         completedAt: new Date()
+    //       });
 
-          return response.save();
-        })
-        .then(res)
-        .catch(utils.handleWriteErr(req, res))
-        .done();
+    //       return response.save();
+    //     })
+    //     .then(res)
+    //     .catch(utils.handleWriteErr(req, res))
+    //     .done();
     }
   });
 

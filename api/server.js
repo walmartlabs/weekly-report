@@ -7,16 +7,40 @@
 var path = require("path");
 
 var _ = require("lodash");
-var dbSequelized = require("./plugins/db-sequelized");
 var Good = require("good");
+var Poop = require("poop");
 var Hapi = require("hapi");
-var surveyRoutes = require("./routes/surveys");
-var responseRoutes = require("./routes/responses");
 var when = require("when");
 
+var dbSequelized = require("./plugins/db-sequelized");
+var responseRoutes = require("./routes/responses");
+var surveyRoutes = require("./routes/surveys");
+var utils = require("./lib/utils");
+
 module.exports = function (options) {
+  options = options || {};
+
   return when.promise(function (resolve, reject) {
     var server = Hapi.createServer("localhost", process.env.PORT || 8000);
+
+    // Uncaught exceptions. Any exception in route handlers that are not
+    // handled (only sequelize promise chain exceptions handled)
+    server.on("internalError", function (request, err) {
+      var errData = {
+          stack: err.stack,
+          errMessage: err.message,
+          name: err.name,
+          type: "Internal Error"
+      };
+
+      try {
+          server.log("error", utils.logMeta(errData));
+      } catch (e) {
+        global.console.log(errData);
+      } finally {
+        process.exit(1);
+      }
+    });
 
     // Add routes to server
     surveyRoutes(server);
@@ -33,26 +57,14 @@ module.exports = function (options) {
       }
     });
 
-    options = options || {};
-
+    // Get reporters if specified in options
     var goodOptions;
-
-    // Set logging for testing (only log errors)
-    if (process.env.NODE_ENV === "test") {
-      var reporter = new Good.GoodConsole();
-
-      // Only log "log" events that are not info level
-      reporter._filter = function (event, eventData) {
-        if (eventData.event === "log" && !_.contains(eventData.tags, "info")) {
-          return true;
-        }
-        return false;
-      };
-
+    if (options.reporters) {
       goodOptions = {
-        reporters: [reporter]
+        reporters: options.reporters
       };
     }
+
     // Add sequelize models
     server.pack.register([{
       // Add Good logger

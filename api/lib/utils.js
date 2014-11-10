@@ -20,15 +20,10 @@ var when = require("when");
 
 var logMeta = function (obj) {
   return _.merge({
-    process: {
-      pid: process.pid
-    },
     os: {
       hostname: os.hostname()
     },
-    workerId: process.env.WORKER_ID,
-    timestamp: new Date(),
-
+    workerId: process.env.WORKER_ID
   }, obj);
 };
 
