@@ -55,10 +55,30 @@ module.exports = function (server) {
 
       utils.batchResponse(req.params.number, models)
         .then(function (responseBody) {
-
           res(responseBody);
         })
         .catch(utils.handleWriteErr(req, res));
+    }
+  });
+
+  // Get all surveys and responses for a given periodEnd date
+  server.route({
+    method: "GET",
+    path: "/surveys/{periodEnd}",
+    handler: function (req, res) {
+      var models = req.server.plugins.sqlModels.models;
+      var periodEnd = req.params.periodEnd;
+
+      models.Survey.findAll({
+        where: {
+          periodEnd: periodEnd
+        },
+        include: [models.Response]
+      })
+      .then(function (responseBody) {
+        res(responseBody);
+      })
+      .catch(utils.handleWriteErr(req, res));
     }
   });
 };
