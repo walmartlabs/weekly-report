@@ -28,6 +28,7 @@ module.exports = function (options) {
         stack: err.stack,
         errMessage: err.message,
         name: err.name,
+        path: request.path,
         type: "Internal Error"
       };
 
@@ -36,7 +37,19 @@ module.exports = function (options) {
       } catch (e) {
         global.console.log(errData);
       } finally {
-        process.exit(1);
+        if (process.env.NODE_ENV === "test") {
+          throw err;
+        }
+
+        // Try to stop the server
+        try {
+          server.stop(function () {
+            process.exit(1);
+          });
+        // Didn't work, exit
+        } catch (e) {
+          process.exit(1);
+        }
       }
     });
 

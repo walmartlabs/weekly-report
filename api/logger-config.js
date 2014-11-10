@@ -15,8 +15,6 @@ var fileReporter = new Good.GoodFile(LOG_PATH, {
 // Setup console reporter
 // Default args
 var consoleArgs = [{
-  ops: "*",
-  request: "*",
   log: "*",
   error: "*"
 }];
