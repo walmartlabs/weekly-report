@@ -16,6 +16,7 @@ var _ = require("lodash");
 var Chance = require("chance");
 var chance = new Chance();
 var when = require("when");
+var moment = require("moment");
 
 // For use in .catch.
 // Log error and exit process
@@ -167,10 +168,15 @@ var validArrayJSON = function (options) {
   return true;
 };
 
+var isYYYYMMDD = function (date) {
+  return moment(date, "YYYYMMDD", true).isValid();
+};
+
 module.exports = {
   batchResponse: batchResponse,
   createSurvey: createSurvey,
   handleWriteErr: handleWriteErr,
   tokenByEmailFromBatch: tokenByEmailFromBatch,
-  validArrayJSON: validArrayJSON
+  validArrayJSON: validArrayJSON,
+  isYYYYMMDD: isYYYYMMDD
 };

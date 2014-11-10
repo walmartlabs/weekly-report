@@ -6,18 +6,22 @@
  */
 // id, createdAt, updatedAt added automatically
 
+var isYYYYMMDD = require("../lib/utils").isYYYYMMDD;
 var SHORT_CHARS = 255;
 
 module.exports = function (sqlize, DataTypes) {
 
   var Survey = sqlize.define("Survey", {
     periodStart: {
-      type: DataTypes.DATE,
+      type: DataTypes.STRING(SHORT_CHARS),
       allowNull: false
     },
     periodEnd: {
-      type: DataTypes.DATE,
-      allowNull: false
+      type: DataTypes.STRING(SHORT_CHARS),
+      allowNull: false,
+      validate: {
+        isYYYYMMDD: isYYYYMMDD
+      }
     },
     creatorEmail: {
       type: DataTypes.STRING(SHORT_CHARS),
