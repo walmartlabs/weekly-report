@@ -184,4 +184,33 @@ describe("api/routes/", function () {
       });
     });
   });
+
+  describe("api/routes/surveys", function () {
+
+    it("should GET surveys if valid periodEnd date", function (done) {
+      var periodEnd = testSurveys[0].periodEnd;
+
+      server.inject({
+        method: "GET",
+        url: "/surveys/" + periodEnd,
+      }, function (res) {
+        test.done(done, function () {
+          expect(res.statusCode).to.equal(200);
+          expect(res.headers["content-type"])
+            .to.equal("text/html; charset=utf-8");
+        });
+      });
+    });
+
+    it("should GET error if invalid periodEnd date", function (done) {
+      server.inject({
+        method: "GET",
+        url: "/surveys/invalidPeriodEnd"
+      }, function (res) {
+        test.done(done, function () {
+          expect(res.statusCode).to.equal(400);
+        });
+      });
+    });
+  });
 });
