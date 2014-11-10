@@ -6,9 +6,7 @@
  */
 var path = require("path");
 
-var _ = require("lodash");
 var Good = require("good");
-var Poop = require("poop");
 var Hapi = require("hapi");
 var when = require("when");
 
@@ -27,14 +25,14 @@ module.exports = function (options) {
     // handled (only sequelize promise chain exceptions handled)
     server.on("internalError", function (request, err) {
       var errData = {
-          stack: err.stack,
-          errMessage: err.message,
-          name: err.name,
-          type: "Internal Error"
+        stack: err.stack,
+        errMessage: err.message,
+        name: err.name,
+        type: "Internal Error"
       };
 
       try {
-          server.log("error", utils.logMeta(errData));
+        server.log("error", utils.logMeta(errData));
       } catch (e) {
         global.console.log(errData);
       } finally {

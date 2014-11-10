@@ -1,4 +1,3 @@
-var _ = require("lodash");
 var Good = require("good");
 var goodConsole = require("good-console");
 var moment = require("moment");
