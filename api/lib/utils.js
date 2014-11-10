@@ -168,6 +168,11 @@ var validArrayJSON = function (options) {
   return true;
 };
 
+/**
+ * Checks if string is a date value in the format "YYYYMMDD"
+ * @param  {String}  date Date string
+ * @return {Boolean}      True if date is formatted "YYYYMMDD"
+ */
 var isYYYYMMDD = function (date) {
   return moment(date, "YYYYMMDD", true).isValid();
 };
