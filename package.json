@@ -15,7 +15,7 @@
     "mysql": "2.5.2",
     "poop": "^1.2.4",
     "recluster": "0.3.7",
-    "sequelize": "2.0.0-rc2",
+    "sequelize": "git+https://github.com/little-big-h/sequelize.git#ae799bfc1ab3df629d689b58f47d51f45179bca7",
     "sqlite3": "3.0.2",
     "when": "3.5.2"
   },
