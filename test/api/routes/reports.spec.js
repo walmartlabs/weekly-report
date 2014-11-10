@@ -8,7 +8,7 @@ describe("api/routes/", function () {
 
   var server;
 
-  // Get a surver instance
+  // Get a server instance
   before(function (done) {
     getServer(null, function (err, serverRef) {
       if (err) { return done(err); }

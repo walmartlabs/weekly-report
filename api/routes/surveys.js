@@ -35,7 +35,7 @@ module.exports = function (server) {
         })
 
         // Fetch all newly created surveys joined to new responses
-        // and create resonse object
+        // and create response object
         .then(function () {
           return utils.batchResponse(batchId, models);
         })
