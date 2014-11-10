@@ -2,7 +2,7 @@ var Good = require("good");
 var goodConsole = require("good-console");
 var moment = require("moment");
 
-var LOG_PATH = "./log-" + moment().format("YYYYMMDD");
+var LOG_PATH = "./logs/log-" + moment().format("YYYYMMDD");
 
 // File reporter to log everything
 var fileReporter = new Good.GoodFile(LOG_PATH, {
