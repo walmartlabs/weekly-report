@@ -14,7 +14,7 @@ if (LOG_FILE !== "false" && LOG_FILE !== "true") {
 
 var reporters = [];
 
-if (LOG_FILE) {
+if (LOG_FILE === "true") {
   reporters.push(new Good.GoodFile(LOG_PATH, {
     ops: "*",
     request: "*",
