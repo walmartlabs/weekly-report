@@ -7,6 +7,7 @@
 var _ = require("lodash");
 var when = require("when");
 var utils = require("../lib/utils");
+var Joi = require("joi");
 
 module.exports = function (server) {
 
@@ -83,6 +84,13 @@ module.exports = function (server) {
         res(responseBody);
       })
       .catch(utils.handleWriteErr(req, res));
+    },
+    config: {
+      validate: {
+        params: {
+          periodEnd: Joi.date().format("YYYYMMDD")
+        }
+      }
     }
   });
 };
