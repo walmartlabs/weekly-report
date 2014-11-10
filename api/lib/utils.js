@@ -23,7 +23,7 @@ var moment = require("moment");
 var handleWriteErr = function (req, res) {
   return function (err) {
     // If validation err respond and don't end process
-    if (err.message = "SequelizeValidationError") {
+    if (err.name === "SequelizeValidationError") {
       return res(err.errors).code(400);
     }
 
@@ -36,7 +36,7 @@ var handleWriteErr = function (req, res) {
 
       res(err.message).code(500);
     } catch (e) {
-      global.console.log.error(err);
+      global.console.error(err);
     } finally {
       process.exit(1);
     }
