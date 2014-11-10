@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 var _ = require("lodash");
 var utils = require("./lib/utils");
 var when = require("when");

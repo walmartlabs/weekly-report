@@ -51,6 +51,8 @@
     "url": "https://github.com/walmartlabs/weekly-report/issues"
   },
   "scripts": {
-    "todo": "grep -Rn 'TODO' api app test *.js"
+    "todo": "grep -Rn 'TODO' api app test *.js",
+    "single-log-file": "LOG_FILE=true ./api/server-single.js",
+    "mock-log-file": "LOG_FILE=true ./api/server-mock.js"
   }
 }
