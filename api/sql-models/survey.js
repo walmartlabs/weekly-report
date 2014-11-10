@@ -6,7 +6,7 @@
  */
 // id, createdAt, updatedAt added automatically
 
-var isYYYYMMDD = require("../lib/utils").isYYYYMMDD;
+var isValidDateString = require("../lib/utils").isValidDateString;
 var SHORT_CHARS = 255;
 
 module.exports = function (sqlize, DataTypes) {
@@ -20,7 +20,7 @@ module.exports = function (sqlize, DataTypes) {
       type: DataTypes.STRING(SHORT_CHARS),
       allowNull: false,
       validate: {
-        isYYYYMMDD: isYYYYMMDD
+        isValidDateString: isValidDateString
       }
     },
     creatorEmail: {

@@ -169,11 +169,11 @@ var validArrayJSON = function (options) {
 };
 
 /**
- * Checks if string is a date value in the format "YYYYMMDD"
+ * Checks if string is a date value in the correct format
  * @param  {String}  date Date string
- * @return {Boolean}      True if date is formatted "YYYYMMDD"
+ * @return {Boolean}      True if date is formatted correctly
  */
-var isYYYYMMDD = function (date) {
+var isValidDateString = function (date) {
   var schema = Joi.date().format("YYYYMMDD");
   return !schema.validate(date).error;
 };
@@ -184,5 +184,5 @@ module.exports = {
   handleWriteErr: handleWriteErr,
   tokenByEmailFromBatch: tokenByEmailFromBatch,
   validArrayJSON: validArrayJSON,
-  isYYYYMMDD: isYYYYMMDD
+  isValidDateString: isValidDateString
 };

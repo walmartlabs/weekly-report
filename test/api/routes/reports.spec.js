@@ -196,8 +196,9 @@ describe("api/routes/", function () {
       }, function (res) {
         test.done(done, function () {
           expect(res.statusCode).to.equal(200);
-          expect(res.headers["content-type"])
-            .to.equal("application/json; charset=utf-8");
+          expect(res.headers)
+            .to.have.property("content-type",
+              "application/json; charset=utf-8");
         });
       });
     });
