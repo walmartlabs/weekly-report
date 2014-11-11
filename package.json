@@ -8,6 +8,7 @@
     "chance": "0.6.1",
     "good": "3.1.0",
     "good-console": "2.0.1",
+    "good-file": "^3.1.0",
     "hapi": "7.0.0",
     "jade": "1.7.0",
     "lodash": "2.4.1",

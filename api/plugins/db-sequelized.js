@@ -6,8 +6,6 @@ var responseSchema = require("../sql-models/response");
 var surveyBatchSchema = require("../sql-models/survey-batch");
 
 var register = function (plugin, options, next) {
-  options.server.log("info", "Using dialect: " + options.dialect);
-
   // Create db connection
   var sqlize = new Sqlize(
     options.database, options.user, options.pass,

@@ -1,5 +1,5 @@
-var Good = require("good");
 var goodConsole = require("good-console");
+var goodFile = require("good-file");
 var moment = require("moment");
 
 var LOG_PATH = process.env.LOG_PATH ||
@@ -15,12 +15,14 @@ if (LOG_FILE !== "false" && LOG_FILE !== "true") {
 var reporters = [];
 
 if (LOG_FILE === "true") {
-  reporters.push(new Good.GoodFile(LOG_PATH, {
-    ops: "*",
-    request: "*",
-    log: "*",
-    error: "*"
-  }));
+  reporters.push({
+    reporter: goodFile,
+    args: [LOG_PATH, {
+      request: "*",
+      log: "*",
+      error: "*"
+    }]
+  });
 }
 
 // Setup console reporter
