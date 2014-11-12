@@ -53,6 +53,6 @@
   "scripts": {
     "todo": "grep -Rn 'TODO' api app test *.js",
     "single-log-file": "LOG_FILE=true ./api/server-single.js",
-    "mock-log-file": "LOG_FILE=true ./api/server-mock.js"
+    "mock-log-file": "LOG_FILE=true ./api/server-mock.js "
   }
 }
