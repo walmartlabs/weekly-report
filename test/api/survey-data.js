@@ -3,12 +3,10 @@
  *
  * @exports {array}
  **/
-var moment = require("moment");
-
 module.exports =  [
   {
-    periodStart: moment("20140101", "YYYYMMDD").toISOString(),
-    periodEnd: moment("20140115", "YYYYMMDD").toISOString(),
+    periodStart: "20140101",
+    periodEnd: "20140115",
     projectName: "Foo Project",
     projectId: "1654564",
     creatorEmail: "creator@example.com",
@@ -24,8 +22,8 @@ module.exports =  [
     ]
   },
   {
-    periodStart: moment("20140115", "YYYYMMDD").toISOString(),
-    periodEnd: moment("20140130", "YYYYMMDD").toISOString(),
+    periodStart: "20140115",
+    periodEnd: "20140130",
     projectName: "Bar Project",
     projectId: "54654654",
     creatorEmail: "creator3@example.com",

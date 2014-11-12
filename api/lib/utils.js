@@ -16,6 +16,7 @@ var _ = require("lodash");
 var Chance = require("chance");
 var chance = new Chance();
 var when = require("when");
+var Joi = require("joi");
 
 // For use in .catch.
 // Log error and exit process
@@ -167,10 +168,21 @@ var validArrayJSON = function (options) {
   return true;
 };
 
+/**
+ * Checks if string is a date value in the correct format
+ * @param  {String}  date Date string
+ * @return {Boolean}      True if date is formatted correctly
+ */
+var isValidDateString = function (date) {
+  var schema = Joi.date().format("YYYYMMDD");
+  return !schema.validate(date).error;
+};
+
 module.exports = {
   batchResponse: batchResponse,
   createSurvey: createSurvey,
   handleWriteErr: handleWriteErr,
   tokenByEmailFromBatch: tokenByEmailFromBatch,
-  validArrayJSON: validArrayJSON
+  validArrayJSON: validArrayJSON,
+  isValidDateString: isValidDateString
 };

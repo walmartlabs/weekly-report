@@ -8,7 +8,7 @@ describe("api/routes/", function () {
 
   var server;
 
-  // Get a surver instance
+  // Get a server instance
   before(function (done) {
     getServer(null, function (err, serverRef) {
       if (err) { return done(err); }
@@ -177,6 +177,39 @@ describe("api/routes/", function () {
         method: "POST",
         url: "/responses",
         payload: completedResponse
+      }, function (res) {
+        test.done(done, function () {
+          expect(res.statusCode).to.equal(400);
+        });
+      });
+    });
+  });
+
+  describe("api/routes/surveys", function () {
+
+    it("should GET surveys if valid periodEnd date", function (done) {
+      var periodEnd = testSurveys[0].periodEnd;
+
+      server.inject({
+        method: "GET",
+        url: "/surveys/" + periodEnd,
+      }, function (res) {
+        test.done(done, function () {
+          expect(res.statusCode).to.equal(200);
+          expect(JSON.parse(res.payload))
+            .to.be.an("array")
+            .with.length(1);
+          expect(res.headers)
+            .to.have.property("content-type",
+              "application/json; charset=utf-8");
+        });
+      });
+    });
+
+    it("should GET error if invalid periodEnd date", function (done) {
+      server.inject({
+        method: "GET",
+        url: "/surveys/invalidPeriodEnd"
       }, function (res) {
         test.done(done, function () {
           expect(res.statusCode).to.equal(400);

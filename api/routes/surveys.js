@@ -7,6 +7,8 @@
 var _ = require("lodash");
 var when = require("when");
 var utils = require("../lib/utils");
+var Joi = require("joi");
+var moment = require("moment");
 
 module.exports = function (server) {
 
@@ -59,10 +61,37 @@ module.exports = function (server) {
 
       utils.batchResponse(req.params.number, models)
         .then(function (responseBody) {
-
           res(responseBody);
         })
         .catch(utils.handleWriteErr(req, res));
+    }
+  });
+
+  // Get all surveys and responses for a given periodEnd date
+  server.route({
+    method: "GET",
+    path: "/surveys/{periodEnd}",
+    handler: function (req, res) {
+      var models = req.server.plugins.sqlModels.models;
+      var periodEnd = moment(req.params.periodEnd).format("YYYYMMDD");
+
+      models.Survey.findAll({
+        where: {
+          periodEnd: periodEnd
+        },
+        include: [models.Response]
+      })
+      .then(function (responseBody) {
+        res(_.pluck(responseBody, "dataValues"));
+      })
+      .catch(utils.handleWriteErr(req, res));
+    },
+    config: {
+      validate: {
+        params: {
+          periodEnd: Joi.date().format("YYYYMMDD")
+        }
+      }
     }
   });
 };
