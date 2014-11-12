@@ -82,7 +82,7 @@ module.exports = function (server) {
         include: [models.Response]
       })
       .then(function (responseBody) {
-        res(responseBody);
+        res(_.pluck(responseBody, "dataValues"));
       })
       .catch(utils.handleWriteErr(req, res));
     },
