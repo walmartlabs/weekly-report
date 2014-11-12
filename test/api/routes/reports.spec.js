@@ -196,6 +196,9 @@ describe("api/routes/", function () {
       }, function (res) {
         test.done(done, function () {
           expect(res.statusCode).to.equal(200);
+          expect(JSON.parse(res.payload))
+            .to.be.an("array")
+            .with.length(1);
           expect(res.headers)
             .to.have.property("content-type",
               "application/json; charset=utf-8");

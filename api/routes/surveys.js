@@ -8,6 +8,7 @@ var _ = require("lodash");
 var when = require("when");
 var utils = require("../lib/utils");
 var Joi = require("joi");
+var moment = require("moment");
 
 module.exports = function (server) {
 
@@ -72,7 +73,7 @@ module.exports = function (server) {
     path: "/surveys/{periodEnd}",
     handler: function (req, res) {
       var models = req.server.plugins.sqlModels.models;
-      var periodEnd = req.params.periodEnd;
+      var periodEnd = moment(req.params.periodEnd).format("YYYYMMDD");
 
       models.Survey.findAll({
         where: {
