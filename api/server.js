@@ -16,6 +16,8 @@ var dbSequelized = require("./plugins/db-sequelized");
 var responseRoutes = require("./routes/responses");
 var surveyRoutes = require("./routes/surveys");
 
+var SHUTDOWN_WAIT_TIME = 5000;
+
 module.exports = function (options) {
   options = options || {};
 
@@ -34,7 +36,7 @@ module.exports = function (options) {
       // Give this 5 seconds to work or force exit
       setTimeout(function () {
         process.exit(1);
-      }, 5000);
+      }, SHUTDOWN_WAIT_TIME);
 
       // Look for goodFile, and exit when queue drains
       var reporters = server.plugins.good.monitor._reporters;

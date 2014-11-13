@@ -24,7 +24,7 @@ var exitWithError = function (err) {
 var liveServer = function (options) {
   options = _.extend({
     reporters: reporters
-  }, options || {});
+  }, options);
 
   return when.promise(function (resolve) {
     var server;
