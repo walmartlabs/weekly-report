@@ -15,10 +15,20 @@
 var _ = require("lodash");
 var Chance = require("chance");
 var chance = new Chance();
+var os = require("os");
 var when = require("when");
 var Joi = require("joi");
 
-// For use in .catch.
+var logMeta = function (obj) {
+  return _.merge({
+    os: {
+      hostname: os.hostname()
+    },
+    workerId: process.env.WORKER_ID
+  }, obj);
+};
+
+// For use in catch.
 // Log error and exit process
 var handleWriteErr = function (req, res) {
   return function (err) {
@@ -28,11 +38,11 @@ var handleWriteErr = function (req, res) {
     }
 
     try {
-      req.server.log("error", {
+      req.server.log("error", logMeta({
         stack: err.stack,
         errMessage: err.message,
         name: err.name
-      });
+      }));
 
       res(err.message).code(500);
     } catch (e) {
@@ -182,6 +192,7 @@ module.exports = {
   batchResponse: batchResponse,
   createSurvey: createSurvey,
   handleWriteErr: handleWriteErr,
+  logMeta: logMeta,
   tokenByEmailFromBatch: tokenByEmailFromBatch,
   validArrayJSON: validArrayJSON,
   isValidDateString: isValidDateString

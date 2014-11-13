@@ -48,7 +48,8 @@ module.exports = function (server) {
           });
       })
         // If catch then transaction will have been rolled back
-        .catch(utils.handleWriteErr(req, res));
+        .catch(utils.handleWriteErr(req, res))
+        .done();
     }
   });
 
@@ -63,7 +64,8 @@ module.exports = function (server) {
         .then(function (responseBody) {
           res(responseBody);
         })
-        .catch(utils.handleWriteErr(req, res));
+        .catch(utils.handleWriteErr(req, res))
+        .done();
     }
   });
 

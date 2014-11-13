@@ -1,5 +1,5 @@
 var _ = require("lodash");
-var getServer = require("../../../api/server");
+var liveServer = require("../../../api/server-single");
 
 // A batch of surveys to mock with
 var testSurveys = require("../survey-data");
@@ -10,12 +10,11 @@ describe("api/routes/", function () {
 
   // Get a server instance
   before(function (done) {
-    getServer(null, function (err, serverRef) {
-      if (err) { return done(err); }
-
-      server = serverRef;
-      server.start(done);
-    });
+    liveServer()
+      .done(function (serverRef) {
+        server = serverRef;
+        done();
+      });
   });
 
   // Shut down server
