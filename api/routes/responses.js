@@ -31,10 +31,6 @@ module.exports = function (server) {
           }
           return entry;
         })
-        // Remove empty string entries
-        .omit(function (entry) {
-          return _.isString(entry) && !entry.match(/[a-z]/i);
-        })
         .value();
 
       // Get response record, populate, save
@@ -45,27 +41,24 @@ module.exports = function (server) {
             res().code(404);
           }
 
-          // Stringify the new fields
-          var postData = _.chain(data)
-            .pick([
-              "accomplishments",
-              "blockers",
-              "moralePicker",
-              "privateFeedback"
-            ])
-            .mapValues(function (value) {
-              return JSON.stringify(value);
-            })
-            .value();
-
-          // Add fields to be saved
-          _.extend(response.dataValues, postData, {
-            completedAt: new Date()
+          // Set each field with 'set' method
+          // so invokes virtual setters
+          _.each(_.pick(data, [
+            "accomplishments",
+            "blockers",
+            "moralePicker",
+            "privateFeedback"
+          ]), function (value, key) {
+            response.set(key, value);
           });
+
+          response.set("completedAt", new Date());
 
           return response.save();
         })
-        .then(res)
+        .then(function (response) {
+          res(response.toJSON());
+        })
         .catch(utils.handleWriteErr(req, res))
         .done();
     }

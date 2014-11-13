@@ -124,7 +124,7 @@ var batchResponse = function (batchId, models) {
     .then(function (batch) {
       resolve({
         surveys: _.map(batch, function (survey) {
-          return survey.dataValues;
+          return survey.toJSON();
         }),
         tokensByEmail: tokenByEmailFromBatch(batch),
         batchId: batchId
@@ -188,11 +188,27 @@ var isValidDateString = function (date) {
   return !schema.validate(date).error;
 };
 
+/**
+ * If value is not a string, and JSON.stringify
+ * @param  {string}  fieldName  Field name using the setter
+ * @return {function}           Sets a stringified version of the passed in arg
+ */
+var stringifyNonString = function (fieldName) {
+  return function (value) {
+    if (_.isString(value) || _.isNull(value)) {
+      return this.setDataValue(fieldName, value);
+    }
+
+    return this.setDataValue(fieldName, JSON.stringify(value));
+  };
+};
+
 module.exports = {
   batchResponse: batchResponse,
   createSurvey: createSurvey,
   handleWriteErr: handleWriteErr,
   logMeta: logMeta,
+  stringifyNonString: stringifyNonString,
   tokenByEmailFromBatch: tokenByEmailFromBatch,
   validArrayJSON: validArrayJSON,
   isValidDateString: isValidDateString

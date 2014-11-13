@@ -2,6 +2,7 @@ var _ = require("lodash");
 var liveServer = require("../../../api/server-single");
 
 // A batch of surveys to mock with
+var responseData = require("../response-data");
 var testSurveys = require("../survey-data");
 
 describe("api/routes/", function () {
@@ -60,7 +61,7 @@ describe("api/routes/", function () {
       });
     });
 
-    it("POST: should 400 if email field not an email",
+    it("POST: should 400 if creator email field not an email",
       function (done) {
 
       var testMissing = [_.omit(testSurveys[0], "creatorEmail")];
@@ -97,10 +98,15 @@ describe("api/routes/", function () {
   describe("api/routes/responses", function () {
     // Tokens for hi@example.com
     var tokens;
+    var completedResponse;
 
     // create `...` joined list of tokens to fetch from server
     before(function () {
       tokens = batch.tokensByEmail[0].tokens.join("...");
+
+      completedResponse = _.extend({
+        token: tokens.split("...")[0]
+      }, responseData);
     });
 
     it("should GET response view if valid tokens", function (done) {
@@ -131,23 +137,8 @@ describe("api/routes/", function () {
       });
     });
 
-    it("POST with valid data should return 200",
+    it("POST with valid data should return updated record",
       function (done) {
-
-      var completedResponse = {
-        token: tokens.split("...")[0],
-        moralePicker: "1",
-        accomplishments: [
-          "one",
-          "two",
-          "three"
-        ],
-        blockers: [
-          "four",
-          "five"
-        ],
-        privateFeedback: "something private"
-      };
 
       server.inject({
         method: "POST",
@@ -155,7 +146,16 @@ describe("api/routes/", function () {
         payload: completedResponse
       }, function (res) {
         test.done(done, function () {
+          var data = JSON.parse(res.payload);
+
           expect(res.statusCode).to.equal(200);
+          _.each(completedResponse, function (value, key) {
+            if (_.isArray(value)) {
+              expect(data[key]).to.include.members(value);
+            } else {
+              expect(data[key]).to.equal(value);
+            }
+          });
         });
       });
     });
@@ -163,7 +163,7 @@ describe("api/routes/", function () {
     it("POST without accomplishments should 400",
       function (done) {
 
-      var completedResponse = {
+      var badResponse = {
         token: tokens.split("...")[0],
         accomplishments: [" "],
         blockers: [
@@ -175,7 +175,7 @@ describe("api/routes/", function () {
       server.inject({
         method: "POST",
         url: "/responses",
-        payload: completedResponse
+        payload: badResponse
       }, function (res) {
         test.done(done, function () {
           expect(res.statusCode).to.equal(400);
@@ -194,10 +194,13 @@ describe("api/routes/", function () {
         url: "/surveys/" + periodEnd,
       }, function (res) {
         test.done(done, function () {
+          var data = JSON.parse(res.payload);
+
           expect(res.statusCode).to.equal(200);
-          expect(JSON.parse(res.payload))
+          expect(data)
             .to.be.an("array")
             .with.length(1);
+          expect(data[0]).to.include(_.omit(testSurveys[0], "emails"));
           expect(res.headers)
             .to.have.property("content-type",
               "application/json; charset=utf-8");
