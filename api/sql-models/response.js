@@ -6,9 +6,9 @@
  */
 // id, createdAt, updatedAt added automatically
 
+var storeJSON = require("../lib/store-json");
 var utils = require("../lib/utils");
 
-var stringifyNonString = utils.stringifyNonString;
 var validArrayJSON = utils.validArrayJSON;
 
 var SHORT_CHARS = 255;
@@ -41,15 +41,10 @@ module.exports = function (sqlize, DataTypes) {
         notEmpty: true
       }
     },
-    accomplishments: {
+    accomplishments: storeJSON("accomplishments", {
       type: DataTypes.TEXT,
-      get: function () {
-        return JSON.parse(this.getDataValue("accomplishments"));
-      },
-      set: stringifyNonString("accomplishments"),
       validate: {
         notEmpty: true,
-        // Custom validator
         requiredWithAnswer: function (value) {
           validArrayJSON({
             value: value,
@@ -57,13 +52,9 @@ module.exports = function (sqlize, DataTypes) {
           });
         }
       }
-    },
-    blockers: {
+    }),
+    blockers: storeJSON("blockers", {
       type: DataTypes.TEXT,
-      get: function () {
-        return JSON.parse(this.getDataValue("blockers"));
-      },
-      set: stringifyNonString("blockers"),
       validate: {
         notEmpty: true,
         validArrayJSON: function (value) {
@@ -73,7 +64,7 @@ module.exports = function (sqlize, DataTypes) {
           });
         }
       }
-    },
+    }),
     privateFeedback: {
       type: DataTypes.TEXT,
       validate: {

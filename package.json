@@ -2,7 +2,7 @@
   "name": "weekly-report",
   "version": "0.0.1",
   "description": "Weekly Report",
-  "main": "api/server.js",
+  "main": "api/cluster.js",
   "dependencies": {
     "async": "0.9.0",
     "chance": "0.6.1",

@@ -153,7 +153,7 @@ describe("api/routes/", function () {
             if (_.isArray(value)) {
               expect(data[key]).to.include.members(value);
             } else {
-              expect(data[key]).to.equal(value);
+              expect(data).to.have.property(key, value);
             }
           });
         });
