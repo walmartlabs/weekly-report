@@ -5,7 +5,11 @@
  * @exports {function}  To add models to instance
  */
 // id, createdAt, updatedAt added automatically
-var validArrayJSON = require("../lib/utils").validArrayJSON;
+
+var storeJSON = require("../lib/store-json");
+var utils = require("../lib/utils");
+
+var validArrayJSON = utils.validArrayJSON;
 
 var SHORT_CHARS = 255;
 
@@ -37,11 +41,10 @@ module.exports = function (sqlize, DataTypes) {
         notEmpty: true
       }
     },
-    accomplishments: {
+    accomplishments: storeJSON("accomplishments", {
       type: DataTypes.TEXT,
       validate: {
         notEmpty: true,
-        // Custom validator
         requiredWithAnswer: function (value) {
           validArrayJSON({
             value: value,
@@ -49,8 +52,8 @@ module.exports = function (sqlize, DataTypes) {
           });
         }
       }
-    },
-    blockers: {
+    }),
+    blockers: storeJSON("blockers", {
       type: DataTypes.TEXT,
       validate: {
         notEmpty: true,
@@ -61,7 +64,7 @@ module.exports = function (sqlize, DataTypes) {
           });
         }
       }
-    },
+    }),
     privateFeedback: {
       type: DataTypes.TEXT,
       validate: {

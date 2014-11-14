@@ -5,6 +5,7 @@ var liveServer = require("./server-single");
 
 // A batch of surveys to mock with
 var testSurveys = require("../test/api/survey-data");
+var testResponse = require("../test/api/response-data");
 
 liveServer()
   .done(function (server) {
@@ -31,10 +32,9 @@ liveServer()
       server.inject({
         method: "POST",
         url: "/responses",
-        payload: {
+        payload: _.extend({
           token: link.split("...")[0],
-          accomplishments: ["blah"]
-        }
+        }, testResponse)
       }, function (res) {
         if (res.statusCode !== 200) {
           throw new Error("failed to complete one response");

@@ -124,7 +124,7 @@ var batchResponse = function (batchId, models) {
     .then(function (batch) {
       resolve({
         surveys: _.map(batch, function (survey) {
-          return survey.dataValues;
+          return survey.toJSON();
         }),
         tokensByEmail: tokenByEmailFromBatch(batch),
         batchId: batchId
