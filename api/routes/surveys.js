@@ -81,7 +81,9 @@ module.exports = function (server) {
         include: [models.Response]
       })
       .then(function (responseBody) {
-        return res(_.pluck(responseBody, "dataValues"));
+        res(_.map(responseBody, function (instance) {
+          return instance.toJSON();
+        }));
       })
       .catch(utils.handleWriteErr(req, res))
       .done();
