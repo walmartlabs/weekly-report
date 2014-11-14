@@ -15,6 +15,7 @@
 var _ = require("lodash");
 var Chance = require("chance");
 var chance = new Chance();
+var goodFile = require("good-file");
 var os = require("os");
 var when = require("when");
 var Joi = require("joi");
@@ -32,23 +33,52 @@ var logMeta = function (obj) {
 // Log error and exit process
 var handleWriteErr = function (req, res) {
   return function (err) {
-    // If validation err respond and don't end process
-    if (err.name === "SequelizeValidationError") {
-      return res(err.errors).code(400);
+    try {
+      // Will trigger server.on("internalError")
+      // and shut down process
+      res(err);
+    } catch (e) {
+      global.console.error(err);
+      process.exit(1);
+    }
+  };
+};
+
+var handleInternalErr = function (options) {
+  var server = options.server;
+  var waitTime = options.waitTime;
+
+  return function (req, err) {
+    if (process.env.NODE_ENV === "test") {
+      return;
     }
 
     try {
-      req.server.log("error", logMeta({
-        stack: err.stack,
-        errMessage: err.message,
-        name: err.name
-      }));
+      var exit = function () {
+        server.stop(function () {
+          process.exit(1);
+        });
+      };
 
-      res(err.message).code(500);
+      // Give this 5 seconds to work or force exit
+      setTimeout(function () {
+        process.exit(1);
+      }, waitTime);
+
+      // Look for goodFile, and exit when queue drains
+      var reporters = server.plugins.good.monitor._reporters;
+      var fileRep = _.find(reporters, function (reporter) {
+        return reporter instanceof goodFile;
+      });
+
+      if (!fileRep) {
+        exit();
+      } else {
+        fileRep._queue.drain = exit;
+      }
     } catch (e) {
-      global.console.error(err);
-    } finally {
-      process.exit(1);
+      global.console.log("Internal err handler failed", e);
+      global.console.log(err);
     }
   };
 };
@@ -191,6 +221,7 @@ var isValidDateString = function (date) {
 module.exports = {
   batchResponse: batchResponse,
   createSurvey: createSurvey,
+  handleInternalErr: handleInternalErr,
   handleWriteErr: handleWriteErr,
   logMeta: logMeta,
   tokenByEmailFromBatch: tokenByEmailFromBatch,

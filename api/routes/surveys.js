@@ -47,9 +47,8 @@ module.exports = function (server) {
             return res(responseBody);
           });
       })
-        // If catch then transaction will have been rolled back
-        .catch(utils.handleWriteErr(req, res))
-        .done();
+      .catch(utils.handleWriteErr(req, res))
+      .done();
     }
   });
 
@@ -61,11 +60,9 @@ module.exports = function (server) {
       var models = req.server.plugins.sqlModels.models;
 
       utils.batchResponse(req.params.number, models)
-        .then(function (responseBody) {
+        .done(function (responseBody) {
           res(responseBody);
-        })
-        .catch(utils.handleWriteErr(req, res))
-        .done();
+        });
     }
   });
 
@@ -84,9 +81,10 @@ module.exports = function (server) {
         include: [models.Response]
       })
       .then(function (responseBody) {
-        res(_.pluck(responseBody, "dataValues"));
+        return res(_.pluck(responseBody, "dataValues"));
       })
-      .catch(utils.handleWriteErr(req, res));
+      .catch(utils.handleWriteErr(req, res))
+      .done();
     },
     config: {
       validate: {

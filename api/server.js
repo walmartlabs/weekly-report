@@ -6,10 +6,9 @@
  */
 var path = require("path");
 
-var _ = require("lodash");
 var Good = require("good");
-var goodFile = require("good-file");
 var Hapi = require("hapi");
+var utils = require("./lib/utils");
 var when = require("when");
 
 var dbSequelized = require("./plugins/db-sequelized");
@@ -26,31 +25,10 @@ module.exports = function (options) {
 
     // Uncaught exceptions. Any exception in route handlers that are not
     // handled (only sequelize promise chain exceptions handled)
-    server.on("internalError", function () {
-      var exit = function () {
-        server.stop(function () {
-          process.exit(1);
-        });
-      };
-
-      // Give this 5 seconds to work or force exit
-      setTimeout(function () {
-        process.exit(1);
-      }, SHUTDOWN_WAIT_TIME);
-
-      // Look for goodFile, and exit when queue drains
-      var reporters = server.plugins.good.monitor._reporters;
-
-      var fileRep = _.find(reporters, function (reporter) {
-        return reporter instanceof goodFile;
-      });
-
-      if (!fileRep) {
-        exit();
-      } else {
-        fileRep._queue.drain = exit;
-      }
-    });
+    server.on("internalError", utils.handleInternalErr({
+      server: server,
+      waitTime: SHUTDOWN_WAIT_TIME
+    }));
 
     // Add routes to server
     surveyRoutes(server);

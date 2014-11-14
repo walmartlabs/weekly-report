@@ -25,7 +25,6 @@ describe("api/routes/", function () {
   var batch;
 
   describe("api/routes/surveys/batch", function () {
-
     it("POST: should respond with survey records in new batch",
       function (done) {
 
