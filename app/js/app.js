@@ -1,3 +1,4 @@
+var _ = require("lodash");
 var $ = require("jquery");
 
 $(function () {
@@ -41,6 +42,23 @@ $(function () {
   $("form").submit(function (event) {
     var self = $(this);
     var data = $(this).serializeArray();
+
+    // Remove empty entries in arrays
+    data = _.chain(data)
+      .reject(function (entry) {
+        return _.isEmpty(entry.value);
+      })
+      .groupBy("name")
+      .mapValues(function (value, key) {
+        if (key === "accomplishments" || key === "blockers") {
+          return _.map(value, function (entry) {
+            return entry.value;
+          });
+        }
+
+        return value[0].value;
+      })
+      .value();
 
     $.post("/responses", data)
       // Remove from DOM and show DONE message

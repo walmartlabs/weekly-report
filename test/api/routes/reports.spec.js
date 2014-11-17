@@ -44,6 +44,18 @@ describe("api/routes/", function () {
       });
     });
 
+    it("POST: should 400 if not an array", function (done) {
+      server.inject({
+        method: "POST",
+        url: "/surveys/batch",
+        payload: "BAD"
+      }, function (res) {
+        test.done(done, function () {
+          expect(res.statusCode).to.equal(400);
+        });
+      });
+    });
+
     it("POST: should 400 if required field missing",
       function (done) {
 
