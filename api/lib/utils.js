@@ -15,7 +15,6 @@
 var _ = require("lodash");
 var Chance = require("chance");
 var chance = new Chance();
-var goodFile = require("good-file");
 var os = require("os");
 var when = require("when");
 
@@ -28,57 +27,11 @@ var logMeta = function (obj) {
   }, obj);
 };
 
-// For use in catch.
-// Log error and exit process
+// For sqlize promise chains. Will cause hapi to send 500 with default
+// message and log data.
 var handleWriteErr = function (req, res) {
   return function (err) {
-    try {
-      // Will trigger server.on("internalError")
-      // and shut down process
-      res(err);
-    } catch (e) {
-      global.console.error(err);
-      process.exit(1);
-    }
-  };
-};
-
-var handleInternalErr = function (options) {
-  var server = options.server;
-  var waitTime = options.waitTime;
-
-  return function (req, err) {
-    if (process.env.NODE_ENV === "test") {
-      return;
-    }
-
-    try {
-      var exit = function () {
-        server.stop(function () {
-          process.exit(1);
-        });
-      };
-
-      // Give this 5 seconds to work or force exit
-      setTimeout(function () {
-        process.exit(1);
-      }, waitTime);
-
-      // Look for goodFile, and exit when queue drains
-      var reporters = server.plugins.good.monitor._reporters;
-      var fileRep = _.find(reporters, function (reporter) {
-        return reporter instanceof goodFile;
-      });
-
-      if (!fileRep) {
-        exit();
-      } else {
-        fileRep._queue.drain = exit;
-      }
-    } catch (e) {
-      global.console.log("Internal err handler failed", e);
-      global.console.log(err);
-    }
+    res(err);
   };
 };
 
@@ -167,7 +120,6 @@ var batchResponse = function (batchId, models) {
 module.exports = {
   batchResponse: batchResponse,
   createSurvey: createSurvey,
-  handleInternalErr: handleInternalErr,
   handleWriteErr: handleWriteErr,
   logMeta: logMeta,
   tokenByEmailFromBatch: tokenByEmailFromBatch

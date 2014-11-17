@@ -8,27 +8,17 @@ var path = require("path");
 
 var Good = require("good");
 var Hapi = require("hapi");
-var utils = require("./lib/utils");
 var when = require("when");
 
 var dbSequelized = require("./plugins/db-sequelized");
 var responseRoutes = require("./routes/responses");
 var surveyRoutes = require("./routes/surveys");
 
-var SHUTDOWN_WAIT_TIME = 5000;
-
 module.exports = function (options) {
   options = options || {};
 
   return when.promise(function (resolve, reject) {
     var server = Hapi.createServer("localhost", process.env.PORT || 8000);
-
-    // Uncaught exceptions. Any exception in route handlers that are not
-    // handled (only sequelize promise chain exceptions handled)
-    server.on("internalError", utils.handleInternalErr({
-      server: server,
-      waitTime: SHUTDOWN_WAIT_TIME
-    }));
 
     // Add routes to server
     surveyRoutes(server);
