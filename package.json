@@ -53,7 +53,7 @@
   "scripts": {
     "postinstall": "mkdir -p build/assets/css && node ./post-install.js",
     "todo": "grep -Rn 'TODO' api app test *.js",
-    "single-log-file": "LOG_FILE=true ./api/server-single.js",
-    "mock-log-file": "LOG_FILE=true ./api/server-mock.js "
+    "single-log-file": "LOG_FILE=true ./test/server-single.js",
+    "mock-log-file": "LOG_FILE=true ./test/server-mock.js "
   }
 }

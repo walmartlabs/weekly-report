@@ -7,12 +7,12 @@ var serverPromise = require("../");
 var reporters = require("./logger-config");
 
 var exitWithError = function (err) {
-  var errData = utils.logMeta({
+  var errData = {
     stack: err.stack,
     errMessage: err.message,
     name: err.name,
     msg: "Uncaught exception"
-  });
+  };
 
   global.console.log(errData);
   process.exit(1);
