@@ -1,5 +1,5 @@
 var _ = require("lodash");
-var liveServer = require("../../../api/server-single");
+var liveServer = require("../../server-single");
 
 // A batch of surveys to mock with
 var testSurveys = require("../survey-data");

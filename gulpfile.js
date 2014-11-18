@@ -68,7 +68,7 @@ gulp.task("clean", function () {
 
 gulp.task("server:dev", function (cb) {
   return nodemon({
-    script: "node ./api/server-mock",
+    script: "node ./test/server-mock",
     ext: "js"
   })
   .on("start", cb);

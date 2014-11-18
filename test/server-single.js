@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 
 var _ = require("lodash");
-var utils = require("./lib/utils");
 var when = require("when");
 
-var serverPromise = require("./server");
+var serverPromise = require("../");
 var reporters = require("./logger-config");
 
 var exitWithError = function (err) {
@@ -41,10 +40,11 @@ var liveServer = function (options) {
       .then(function () {
         return when.promise(function (resolveStart) {
           server.start(function () {
-            server.log("info", utils.logMeta({
+            server.log("info", {
               msg: "Server running",
               uri: server.info.uri
-            }));
+            });
+
             resolveStart();
           });
         });
