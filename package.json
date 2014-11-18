@@ -46,8 +46,8 @@
     "type": "git",
     "url": "https://github.com/walmartlabs/weekly-report.git"
   },
-  "private": true,
-  "license": "private",
+  "private": false,
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/walmartlabs/weekly-report/issues"
   },
