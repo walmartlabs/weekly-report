@@ -17,7 +17,6 @@ var Chance = require("chance");
 var chance = new Chance();
 var os = require("os");
 var when = require("when");
-var Joi = require("joi");
 
 var logMeta = function (obj) {
   return _.merge({
@@ -28,28 +27,11 @@ var logMeta = function (obj) {
   }, obj);
 };
 
-// For use in catch.
-// Log error and exit process
+// For sqlize promise chains. Will cause hapi to send 500 with default
+// message and log data.
 var handleWriteErr = function (req, res) {
   return function (err) {
-    // If validation err respond and don't end process
-    if (err.name === "SequelizeValidationError") {
-      return res(err.errors).code(400);
-    }
-
-    try {
-      req.server.log("error", logMeta({
-        stack: err.stack,
-        errMessage: err.message,
-        name: err.name
-      }));
-
-      res(err.message).code(500);
-    } catch (e) {
-      global.console.error(err);
-    } finally {
-      process.exit(1);
-    }
+    res(err);
   };
 };
 
@@ -135,65 +117,10 @@ var batchResponse = function (batchId, models) {
   });
 };
 
-/**
- * Checks if value can be parsed as JSON, that is an array,
- * and that each array entry has letter(s). If not then throws. Otherwise
- * returns true.
- *
- * @param  {object}         options
- *         {JSON string[]}  options.value       The entries
- *         {boolean}        options.allowEmpty  Set to true to allow empty array
- * @throws                                      If criteria not met
- * @return {boolean}                            True if criteria met
- */
-var validArrayJSON = function (options) {
-  var arr;
-
-  try {
-    arr = JSON.parse(options.value);
-  } catch (e) {
-    throw new Error("Can not parse JSON");
-  }
-
-  if (!_.isArray(arr)) {
-    throw new Error("Field must be an array");
-  }
-
-  if (arr.length === 0 && !options.allowEmpty) {
-    throw new Error("Array of responses is empty");
-  }
-
-  // Make sure each array entry has letter(s)
-  _.each(arr, function (entry) {
-    if (!_.isString(entry)) {
-      throw new Error("One ore more entries not a string");
-    }
-
-    if (!entry.match(/[a-z]/i)) {
-      throw new Error("One or more array entries is blank " +
-        "or does not contain letters");
-    }
-  });
-
-  return true;
-};
-
-/**
- * Checks if string is a date value in the correct format
- * @param  {String}  date Date string
- * @return {Boolean}      True if date is formatted correctly
- */
-var isValidDateString = function (date) {
-  var schema = Joi.date().format("YYYYMMDD");
-  return !schema.validate(date).error;
-};
-
 module.exports = {
   batchResponse: batchResponse,
   createSurvey: createSurvey,
   handleWriteErr: handleWriteErr,
   logMeta: logMeta,
-  tokenByEmailFromBatch: tokenByEmailFromBatch,
-  validArrayJSON: validArrayJSON,
-  isValidDateString: isValidDateString
+  tokenByEmailFromBatch: tokenByEmailFromBatch
 };

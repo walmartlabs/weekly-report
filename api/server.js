@@ -6,9 +6,7 @@
  */
 var path = require("path");
 
-var _ = require("lodash");
 var Good = require("good");
-var goodFile = require("good-file");
 var Hapi = require("hapi");
 var when = require("when");
 
@@ -16,41 +14,11 @@ var dbSequelized = require("./plugins/db-sequelized");
 var responseRoutes = require("./routes/responses");
 var surveyRoutes = require("./routes/surveys");
 
-var SHUTDOWN_WAIT_TIME = 5000;
-
 module.exports = function (options) {
   options = options || {};
 
   return when.promise(function (resolve, reject) {
     var server = Hapi.createServer("localhost", process.env.PORT || 8000);
-
-    // Uncaught exceptions. Any exception in route handlers that are not
-    // handled (only sequelize promise chain exceptions handled)
-    server.on("internalError", function () {
-      var exit = function () {
-        server.stop(function () {
-          process.exit(1);
-        });
-      };
-
-      // Give this 5 seconds to work or force exit
-      setTimeout(function () {
-        process.exit(1);
-      }, SHUTDOWN_WAIT_TIME);
-
-      // Look for goodFile, and exit when queue drains
-      var reporters = server.plugins.good.monitor._reporters;
-
-      var fileRep = _.find(reporters, function (reporter) {
-        return reporter instanceof goodFile;
-      });
-
-      if (!fileRep) {
-        exit();
-      } else {
-        fileRep._queue.drain = exit;
-      }
-    });
 
     // Add routes to server
     surveyRoutes(server);

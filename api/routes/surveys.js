@@ -8,7 +8,7 @@ var _ = require("lodash");
 var when = require("when");
 var utils = require("../lib/utils");
 var Joi = require("joi");
-var moment = require("moment");
+var validators = require("../lib/validators");
 
 module.exports = function (server) {
 
@@ -47,9 +47,13 @@ module.exports = function (server) {
             return res(responseBody);
           });
       })
-        // If catch then transaction will have been rolled back
-        .catch(utils.handleWriteErr(req, res))
-        .done();
+      .catch(utils.handleWriteErr(req, res))
+      .done();
+    },
+    config: {
+      validate: {
+        payload: validators.hapiPostBatch
+      }
     }
   });
 
@@ -61,11 +65,16 @@ module.exports = function (server) {
       var models = req.server.plugins.sqlModels.models;
 
       utils.batchResponse(req.params.number, models)
-        .then(function (responseBody) {
+        .done(function (responseBody) {
           res(responseBody);
-        })
-        .catch(utils.handleWriteErr(req, res))
-        .done();
+        });
+    },
+    config: {
+      validate: {
+        params: {
+          number: Joi.number().integer().min(0).required()
+        }
+      }
     }
   });
 
@@ -75,7 +84,7 @@ module.exports = function (server) {
     path: "/surveys/{periodEnd}",
     handler: function (req, res) {
       var models = req.server.plugins.sqlModels.models;
-      var periodEnd = moment(req.params.periodEnd).format("YYYYMMDD");
+      var periodEnd = req.params.periodEnd;
 
       models.Survey.findAll({
         where: {
@@ -88,13 +97,12 @@ module.exports = function (server) {
           return instance.toJSON();
         }));
       })
-      .catch(utils.handleWriteErr(req, res));
+      .catch(utils.handleWriteErr(req, res))
+      .done();
     },
     config: {
       validate: {
-        params: {
-          periodEnd: Joi.date().format("YYYYMMDD")
-        }
+        params: validators.hapiValidDateString("periodEnd")
       }
     }
   });

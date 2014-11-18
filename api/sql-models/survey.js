@@ -6,7 +6,7 @@
  */
 // id, createdAt, updatedAt added automatically
 
-var isValidDateString = require("../lib/utils").isValidDateString;
+var validators = require("../lib/validators");
 var SHORT_CHARS = 255;
 
 module.exports = function (sqlize, DataTypes) {
@@ -14,13 +14,16 @@ module.exports = function (sqlize, DataTypes) {
   var Survey = sqlize.define("Survey", {
     periodStart: {
       type: DataTypes.STRING(SHORT_CHARS),
-      allowNull: false
+      allowNull: false,
+      validate: {
+        checkDate: validators.sqlizeValidDateString
+      }
     },
     periodEnd: {
       type: DataTypes.STRING(SHORT_CHARS),
       allowNull: false,
       validate: {
-        isValidDateString: isValidDateString
+        checkDate: validators.sqlizeValidDateString
       }
     },
     creatorEmail: {
