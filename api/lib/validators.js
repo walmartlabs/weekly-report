@@ -40,7 +40,7 @@ var _checkEmailObj = Joi.object().keys({
   email: _checkEmail.required(),
   name: _checkShortString.required()
 })
-  .unknown(false);
+.unknown(false);
 
 // Validates survey object (used in batch survey post)
 var _postSurvey = Joi.object().keys({
@@ -51,7 +51,7 @@ var _postSurvey = Joi.object().keys({
   creatorEmail: _checkEmail.required(),
   emails: Joi.array().includes(_checkEmailObj).min(1).required()
 })
-  .unknown(false);
+.unknown(false);
 
 // ----------------------------------------------------------------------------
 // EXPOSED: Conform to sqlize validation
@@ -85,9 +85,9 @@ var hapiValidDateString = function (fieldName) {
 // Validates array of surveys
 var hapiPostBatch = function (value, options, next) {
   var schema = Joi.array()
-  .includes(_postSurvey)
-  .min(1)
-  .required();
+    .includes(_postSurvey)
+    .min(1)
+    .required();
 
   // First check Joi schema
   Joi.validate(value, schema, function (err, data) {
@@ -113,7 +113,7 @@ var hapiPostResponse = Joi.object().keys({
   moralePicker: Joi.string().length(1),
   privateFeedback: Joi.string()
 })
-  .unknown();
+.unknown();
 
 module.exports = {
   hapiPostBatch: hapiPostBatch,
