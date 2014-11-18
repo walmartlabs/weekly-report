@@ -1,3 +1,5 @@
+// Run as post-install script to build assets
+// from SASS and JS
 var _ = require("lodash");
 var fs = require("fs");
 var sass = require("node-sass");
