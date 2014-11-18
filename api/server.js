@@ -24,7 +24,27 @@ module.exports = function (options) {
     surveyRoutes(server);
     responseRoutes(server);
 
-    // Add static route
+    // Add static routes
+    server.route({
+      method: "GET",
+      path: "/assets/fonts/{param*}",
+      handler: {
+        directory: {
+          path: path.resolve(__dirname, "../node_modules/font-awesome")
+        }
+      }
+    });
+
+    server.route({
+      method: "GET",
+      path: "/assets/images/{param*}",
+      handler: {
+        directory: {
+          path: path.resolve(__dirname, "../app/assets/images")
+        }
+      }
+    });
+
     server.route({
       method: "GET",
       path: "/{param*}",
