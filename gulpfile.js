@@ -45,18 +45,6 @@ gulp.task("open-browser", function () {
     options.port, "dev", "responses"));
 });
 
-gulp.task("copy", function () {
-  gulp.src("./app/assets/**/*")
-    .pipe(gulp.dest("./build/assets"));
-  gulp.src("./node_modules/font-awesome/css/**/*")
-    .pipe(gulp.dest("./build/assets/fonts/css"));
-  gulp.src("./node_modules/font-awesome/fonts/**/*")
-    .pipe(gulp.dest("./build/assets/fonts/fonts"));
-
-  return;
-});
-
-
 var runCss = function () {
   return gulp.src(options.scssPath + "main.scss")
     .pipe(sass({
@@ -80,7 +68,7 @@ gulp.task("clean", function () {
 
 gulp.task("server:dev", function (cb) {
   return nodemon({
-    script: "node ./api/server-mock",
+    script: "node ./test/server-mock",
     ext: "js"
   })
   .on("start", cb);
@@ -106,11 +94,7 @@ var _webpack = function (cfg) {
   };
 };
 
-gulp.task("js", _webpack(_.merge({}, buildCfg, {
-  optimize: {
-    minimize: false
-  }
-})));
+gulp.task("js", _webpack(buildCfg));
 
 gulp.task("watch", function () {
   livereload.listen();
@@ -232,7 +216,7 @@ gulp.task("server:dev", function () {
 // Aggregated Tasks
 // ----------------------------------------------------------------------------
 gulp.task("build", function () {
-  return runSequence("clean", ["js", "css", "copy"]);
+  return runSequence("clean", ["js", "css"]);
 });
 
 gulp.task("start", function () {
