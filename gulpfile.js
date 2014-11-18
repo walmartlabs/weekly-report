@@ -94,11 +94,7 @@ var _webpack = function (cfg) {
   };
 };
 
-gulp.task("js", _webpack(_.merge({}, buildCfg, {
-  optimize: {
-    minimize: false
-  }
-})));
+gulp.task("js", _webpack(buildCfg));
 
 gulp.task("watch", function () {
   livereload.listen();

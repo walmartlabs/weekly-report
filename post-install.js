@@ -1,6 +1,5 @@
 // Run as post-install script to build assets
 // from SASS and JS
-var _ = require("lodash");
 var fs = require("fs");
 var sass = require("node-sass");
 var webpack = require("webpack");
@@ -14,13 +13,7 @@ var css = sass.renderSync({
 
 fs.writeFileSync("./build/assets/css/main.css", css);
 
-var compiler = webpack(_.merge({}, buildCfg, {
-  optimize: {
-    minimize: true
-  }
-}));
-
-compiler.run(function (err, stats) {
+webpack(buildCfg).run(function (err, stats) {
   if (err) { throw err; }
 
   global.console.log("webpack", stats.toString({
