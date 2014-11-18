@@ -30,12 +30,12 @@ var liveServer = function (options) {
     var server;
 
     serverPromise(options)
-      .then(function (newServer) {
+      .then(function (result) {
         // Save server instance
-        server = newServer;
+        server = result.server;
 
         // Create database tables if do not exist
-        return server.plugins.sqlModels.models.sqlize.sync();
+        return result.createTables();
       })
         // Start up the server
       .then(function () {

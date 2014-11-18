@@ -84,7 +84,12 @@ module.exports = function (options) {
         return reject(err);
       }
 
-      resolve(server);
+      resolve({
+        server: server,
+        createTables: function () {
+          return server.plugins.sqlModels.models.sqlize.sync();
+        }
+      });
     });
   });
 };
