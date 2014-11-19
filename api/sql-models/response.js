@@ -7,9 +7,6 @@
 // id, createdAt, updatedAt added automatically
 
 var storeJSON = require("../lib/store-json");
-var utils = require("../lib/utils");
-
-var validArrayJSON = utils.validArrayJSON;
 
 var SHORT_CHARS = 255;
 
@@ -44,25 +41,13 @@ module.exports = function (sqlize, DataTypes) {
     accomplishments: storeJSON("accomplishments", {
       type: DataTypes.TEXT,
       validate: {
-        notEmpty: true,
-        requiredWithAnswer: function (value) {
-          validArrayJSON({
-            value: value,
-            allowEmpty: false
-          });
-        }
+        notEmpty: true
       }
     }),
     blockers: storeJSON("blockers", {
       type: DataTypes.TEXT,
       validate: {
-        notEmpty: true,
-        validArrayJSON: function (value) {
-          validArrayJSON({
-            value: value,
-            allowEmpty: true
-          });
-        }
+        notEmpty: true
       }
     }),
     privateFeedback: {

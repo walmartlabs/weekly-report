@@ -1,19 +1,18 @@
 #!/usr/bin/env node
 
 var _ = require("lodash");
-var utils = require("./lib/utils");
 var when = require("when");
 
-var serverPromise = require("./server");
+var serverPromise = require("../");
 var reporters = require("./logger-config");
 
 var exitWithError = function (err) {
-  var errData = utils.logMeta({
+  var errData = {
     stack: err.stack,
     errMessage: err.message,
     name: err.name,
     msg: "Uncaught exception"
-  });
+  };
 
   global.console.log(errData);
   process.exit(1);
@@ -30,21 +29,22 @@ var liveServer = function (options) {
     var server;
 
     serverPromise(options)
-      .then(function (newServer) {
+      .then(function (result) {
         // Save server instance
-        server = newServer;
+        server = result.server;
 
         // Create database tables if do not exist
-        return server.plugins.sqlModels.models.sqlize.sync();
+        return result.createTables();
       })
         // Start up the server
       .then(function () {
         return when.promise(function (resolveStart) {
           server.start(function () {
-            server.log("info", utils.logMeta({
+            server.log("info", {
               msg: "Server running",
               uri: server.info.uri
-            }));
+            });
+
             resolveStart();
           });
         });

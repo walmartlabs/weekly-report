@@ -1,5 +1,5 @@
 var _ = require("lodash");
-var liveServer = require("../../../api/server-single");
+var liveServer = require("../../server-single");
 
 // A batch of surveys to mock with
 var responseData = require("../response-data");
@@ -26,7 +26,6 @@ describe("api/routes/", function () {
   var batch;
 
   describe("api/routes/surveys/batch", function () {
-
     it("POST: should respond with survey records in new batch",
       function (done) {
 
@@ -41,6 +40,18 @@ describe("api/routes/", function () {
           _.each(newSurveys.surveys, function (survey, i) {
             expect(survey).to.contain(_.omit(testSurveys[i], "emails"));
           });
+        });
+      });
+    });
+
+    it("POST: should 400 if not an array", function (done) {
+      server.inject({
+        method: "POST",
+        url: "/surveys/batch",
+        payload: "BAD"
+      }, function (res) {
+        test.done(done, function () {
+          expect(res.statusCode).to.equal(400);
         });
       });
     });

@@ -10,6 +10,7 @@ var _ = require("lodash");
 var jade = require("jade");
 
 var utils = require("../lib/utils");
+var validators = require("../lib/validators");
 
 module.exports = function (server) {
   // Post result of single survey
@@ -19,19 +20,6 @@ module.exports = function (server) {
     handler: function (req, res) {
       var models = req.server.plugins.sqlModels.models;
       var data = req.payload;
-
-      data = _.chain(data)
-        // Remove empty entries in arrays
-        .mapValues(function (entry) {
-          if (_.isArray(entry)) {
-            // Keep strings with letter(s)
-            return _.filter(entry, function (item) {
-              return _.isString(item) && item.match(/[a-z]/i);
-            });
-          }
-          return entry;
-        })
-        .value();
 
       // Get response record, populate, save
       models.Response.find({ where: { token: data.token }})
@@ -61,6 +49,11 @@ module.exports = function (server) {
         })
         .catch(utils.handleWriteErr(req, res))
         .done();
+    },
+    config: {
+      validate: {
+        payload: validators.hapiPostResponse
+      }
     }
   });
 
