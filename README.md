@@ -235,4 +235,4 @@ responses for one user. Uses livereload!
 [![Build Status][trav_img]][trav_site]
 
 [trav_img]: https://travis-ci.org/walmartlabs/weekly-report.svg
-[trav_site]: https://magnum.travis-ci.com/walmartlabs/weekly-report
+[trav_site]: https://travis-ci.org/walmartlabs/weekly-report
