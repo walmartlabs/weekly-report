@@ -4,6 +4,7 @@
  *
  * @exports {function}  Promise that resolves with server instance
  */
+var _ = require("lodash");
 var path = require("path");
 
 var Good = require("good");
@@ -16,9 +17,10 @@ var surveyRoutes = require("./routes/surveys");
 
 module.exports = function (options) {
   options = options || {};
+  var dbOptions = options.dbOptions || {};
 
   return when.promise(function (resolve, reject) {
-    var server = Hapi.createServer("localhost", process.env.PORT || 8000);
+    var server = new Hapi.Server(process.env.PORT || 8000);
 
     // Add routes to server
     surveyRoutes(server);
@@ -72,12 +74,20 @@ module.exports = function (options) {
       plugin: dbSequelized,
       options: {
         server: server,
-        database: process.env.DATABASE || options.database || "",
-        user: process.env.DATABASE_USER || options.user || "",
-        pass: process.env.DATABASE_PASS || options.pass || "",
-        dialect: process.env.DATABASE_DIALECT || options.dialect || "sqlite",
-        storage: process.env.DATABASE_STORAGE || options.storage || null,
-        logging: false
+        // Either URL or database/user/pass
+        url: process.env.DATABASE_URL || dbOptions.databaseUrl || null,
+        // db/user/pass
+        database: process.env.DATABASE || dbOptions.database || "",
+        user: process.env.DATABASE_USER || dbOptions.user || "",
+        pass: process.env.DATABASE_PASS || dbOptions.pass || "",
+
+        // Everything else passed to sqlize as options
+        // dbOptions.options will override ENV vars and defaults
+        options: _.merge({
+          dialect: process.env.DATABASE_DIALECT || "sqlite",
+          storage: process.env.DATABASE_STORAGE || null,
+          logging: process.env.SQLIZE_LOGGING || false
+        }, dbOptions.options)
       }
     }], function (err) {
       if (err) {
