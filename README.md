@@ -31,7 +31,7 @@ Package exports an object with properties:
 
 ```
 server        {object}    The Hapi server instance with routes, logger and sqlize loaded
-createTables  {function}  Reference to Sequelize sync method to create sql tables.
+createTables  {function}  Calls and returns Sequelize sync method to create sql tables.
                           Returns a promise.
 ```
 

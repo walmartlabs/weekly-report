@@ -206,7 +206,7 @@ gulp.task("mocha", function () {
 // ----------------------------------------------------------------------------
 gulp.task("server:dev", function () {
   nodemon({
-    script: "./api/server-mock.js",
+    script: "./test/server-mock.js",
     ext: "js",
     ignore: ["*.js", "./app/**/*.js", "./build/**/*.js"]
   });
