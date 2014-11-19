@@ -1,4 +1,3 @@
-var _ = require("lodash");
 var Sqlize = require("sequelize");
 
 var surveySchema = require("../sql-models/survey");
