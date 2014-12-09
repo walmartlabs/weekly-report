@@ -5,15 +5,14 @@
  * @exports {function}  Promise that resolves with server instance
  */
 var _ = require("lodash");
-var path = require("path");
 
 var Good = require("good");
 var Hapi = require("hapi");
 var when = require("when");
 
 var dbSequelized = require("./plugins/db-sequelized");
-var responseRoutes = require("./routes/responses");
-var surveyRoutes = require("./routes/surveys");
+var routes = require("./plugins/routes");
+var staticRoutes = require("./plugins/routes-static");
 
 module.exports = function (options) {
   options = options || {};
@@ -21,41 +20,6 @@ module.exports = function (options) {
 
   return when.promise(function (resolve, reject) {
     var server = new Hapi.Server(process.env.PORT || 8000);
-
-    // Add routes to server
-    surveyRoutes(server);
-    responseRoutes(server);
-
-    // Add static routes
-    server.route({
-      method: "GET",
-      path: "/assets/fonts/{param*}",
-      handler: {
-        directory: {
-          path: path.resolve(__dirname, "../node_modules/font-awesome")
-        }
-      }
-    });
-
-    server.route({
-      method: "GET",
-      path: "/assets/images/{param*}",
-      handler: {
-        directory: {
-          path: path.resolve(__dirname, "../app/assets/images")
-        }
-      }
-    });
-
-    server.route({
-      method: "GET",
-      path: "/{param*}",
-      handler: {
-        directory: {
-          path: path.resolve(__dirname, "../build")
-        }
-      }
-    });
 
     // Get reporters if specified in options
     var goodOptions;
@@ -65,11 +29,22 @@ module.exports = function (options) {
       };
     }
 
-    // Add sequelize models
     server.pack.register([{
-      // Add Good logger
+    // Add responses and surveys routes
+      plugin: routes,
+      options: {
+        customLogoTag: options.customLogoTag
+      }
+
+    }, {
+    // Add static routes
+      plugin: staticRoutes
+    }, {
+    // Add Good logger
       plugin: Good,
       options: goodOptions
+
+    // Add sequelize models
     }, {
       plugin: dbSequelized,
       options: {

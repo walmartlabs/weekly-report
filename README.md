@@ -1,8 +1,6 @@
 # Weekly Reports
 A survey tool.
 
-
-
 ## Using the package API
 
 #### Install

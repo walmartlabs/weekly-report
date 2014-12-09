@@ -2,6 +2,14 @@ var _ = require("lodash");
 var $ = require("jquery");
 
 $(function () {
+  var expandResponse = function () {
+    // Now expand first incomplete form
+    var form = $(".form-body").first().parent();
+
+    form.find(".form-header").click();
+    $("html, body").scrollTop(0);
+  };
+
   // Expand form and collapse all others
   $(".form-header").on("click", function () {
     var thisBody = $(this).next();
@@ -9,6 +17,9 @@ $(function () {
     $(".form-body").not(thisBody).removeClass("is-expanded");
     thisBody.toggleClass("is-expanded");
   });
+
+  // On page load expand first unfinished response
+  expandResponse();
 
   // Add blank text inputs when there are none
   $(".updating-list-item").bind("keyup", function () {
@@ -66,6 +77,9 @@ $(function () {
         self.find(".status").addClass("is-done")
           .parent().addClass("is-done");
         self.find(".form-body").remove();
+
+        // Expand next response
+        expandResponse();
       })
       // Display error message
       .fail(function () {
