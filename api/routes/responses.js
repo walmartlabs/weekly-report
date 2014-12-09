@@ -12,7 +12,7 @@ var jade = require("jade");
 var utils = require("../lib/utils");
 var validators = require("../lib/validators");
 
-module.exports = function (server) {
+module.exports = function (server, options) {
   // Post result of single survey
   server.route({
     method: "POST",
@@ -80,6 +80,7 @@ module.exports = function (server) {
 
         // Prepare view data
         var data = {
+          customLogoTag: options.customLogoTag,
           name: responses[0].get("name"),
           responses: _.map(responses, function (response) {
             return {

@@ -13,6 +13,8 @@ html(lang="en")
     link(rel="stylesheet", href="/assets/css/main.css")
   body
     div.report-container
+      if customLogoTag
+        != customLogoTag
       div.reportHeading
         h1.headingA
           | Hi, #{name}!
