@@ -7,7 +7,10 @@ var liveServer = require("./server-single");
 var testSurveys = require("../test/api/survey-data");
 var testResponse = require("../test/api/response-data");
 
-liveServer()
+liveServer({
+  customLogoTag: "<img src='http://www.walmartlabs.com/wp-content/themes/" +
+    "walmart-labs/images/logo@2x.png?1382072253'>"
+})
   .done(function (server) {
     // Add records
     server.inject({
