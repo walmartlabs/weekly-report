@@ -32,14 +32,14 @@ form.form(id=response.token, onkeypress="return event.keyCode != 13;")
         div.morale-picker-container
           div.morale-picker
             div.morale-item
-              input.morale-picker-input(type="radio", {{}} name="moralePicker", id="morale-rad-1", value="1")
-              label.morale-picker-label.morale-1(for="morale-rad-1") Bad
+              input.morale-picker-input(type="radio", {{}} name="moralePicker", id="morale-rad-1" + response.token, value="1")
+              label.morale-picker-label.morale-1(for="morale-rad-1" + response.token) Bad
             div.morale-item
-              input.morale-picker-input(type="radio", name="moralePicker", id="morale-rad-2", value="2")
-              label.morale-picker-label.morale-2(for="morale-rad-2") Nuetral
+              input.morale-picker-input(type="radio", name="moralePicker", id="morale-rad-2" + response.token, value="2")
+              label.morale-picker-label.morale-2(for="morale-rad-2" + response.token) Neutral
             div.morale-item
-              input.morale-picker-input(type="radio", name="moralePicker", id="morale-rad-3", value="3")
-              label.morale-picker-label.morale-3(for="morale-rad-3") Good
+              input.morale-picker-input(type="radio", name="moralePicker", id="morale-rad-3" + response.token, value="3")
+              label.morale-picker-label.morale-3(for="morale-rad-3" + response.token) Good
         p.headingC Other private feedback?
           div.question-display-answers
             textarea.textarea(name="privateFeedback", form=response.token)
