@@ -37,5 +37,22 @@ module.exports =  [
         name: "ExampleHiLo"
       }
     ]
+  },
+  {
+    periodStart: "20140115",
+    periodEnd: "20140130",
+    projectName: "Baz Project",
+    projectId: "54654659",
+    creatorEmail: "creator3@example.com",
+    emails: [
+      {
+        email: "hi@example.com",
+        name: "ExampleHi"
+      },
+      {
+        email: "hilo@example.com",
+        name: "ExampleHiLo"
+      }
+    ]
   }
 ];
