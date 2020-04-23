@@ -18,7 +18,7 @@
     "mysql": "2.5.2",
     "node-sass": "0.9",
     "sequelize": "git+https://github.com/little-big-h/sequelize.git#ae799bfc1ab3df629d689b58f47d51f45179bca7",
-    "sqlite3": "3.0.2",
+    "sqlite3": "3.1.13",
     "webpack": "1.4.8",
     "when": "3.5.2"
   },
