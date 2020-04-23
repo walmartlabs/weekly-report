@@ -20,7 +20,7 @@
     "sequelize": "git+https://github.com/little-big-h/sequelize.git#ae799bfc1ab3df629d689b58f47d51f45179bca7",
     "sqlite3": "3.0.2",
     "webpack": "1.4.8",
-    "when": "3.5.2"
+    "when": "3.7.8"
   },
   "devDependencies": {
     "chai": "1.9.1",
