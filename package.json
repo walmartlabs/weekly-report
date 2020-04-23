@@ -15,7 +15,7 @@
     "jquery": "2.1.1",
     "lodash": "2.4.1",
     "moment": "2.8.3",
-    "mysql": "2.5.2",
+    "mysql": "2.18.1",
     "node-sass": "0.9",
     "sequelize": "git+https://github.com/little-big-h/sequelize.git#ae799bfc1ab3df629d689b58f47d51f45179bca7",
     "sqlite3": "3.0.2",
